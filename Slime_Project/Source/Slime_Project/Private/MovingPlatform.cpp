@@ -29,7 +29,7 @@ void AMovingPlatform::Tick(float DeltaTime)
 
 	if (ActiveTriggers > 0)
 	{
-		if (HasAuthority())
+		if (!HasAuthority())
 		{
 			FVector Location = GetActorLocation();
 			float JourneyLength = (GlobalTargetLocation - GlobalStartLocation).Size();
