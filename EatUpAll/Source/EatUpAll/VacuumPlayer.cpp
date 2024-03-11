@@ -99,16 +99,16 @@ void AVacuumPlayer::EquipVacuumGun()
 	bHasRifle = true;
 }
 
-void AVacuumPlayer::PerformVacuum()
-{
-	VacuumGun->EnableVacuuming(true);
-}
-
-void AVacuumPlayer::StopVacuum()
-{
-	VacuumGun->EnableVacuuming(false);
-	VacuumGun->CancelVacuumEffect();
-}
+//void AVacuumPlayer::PerformVacuum()
+//{
+//	VacuumGun->EnableVacuuming(true);
+//}
+//
+//void AVacuumPlayer::StopVacuum()
+//{
+//	VacuumGun->EnableVacuuming(false);
+//	VacuumGun->CancelVacuumEffect();
+//}
 
 void AVacuumPlayer::FireVacuumGun()
 {
