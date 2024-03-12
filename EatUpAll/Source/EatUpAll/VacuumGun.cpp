@@ -40,9 +40,11 @@ void AVacuumGun::AddToAmmo_Implementation(AVacuumable* Vacuumable)
 	if (Vacuumable)
 	{
 		Ammo += Vacuumable->GetWeight();
+		
 		if (Ammo > capacity) {
 			Ammo = capacity;
 		}
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), Ammo));
 		PlayAbsorbSound();
 	}
 }
@@ -110,7 +112,7 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 
 			if (CanPlayerSeeThisObject(HitResult))
 			{
-				HitResult.GetComponent()->AddForce(GetForceToAdd(HitResult, DeltaTime), FName(""), true);
+				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
 				HitResult.GetComponent()->SetEnableGravity(false);
 				if (CanAbsorbThisActor(HitResult))
 				{
@@ -131,7 +133,7 @@ bool AVacuumGun::CanPlayerSeeThisObject(FHitResult& HitResult)
 FVector AVacuumGun::GetForceToAdd(FHitResult& HitResult, float DeltaTime)
 {
 	FVector NormalizedToMuzzle = (WeaponMesh->GetSocketLocation(FName("Muzzle")) - HitResult.GetActor()->GetActorLocation()).GetSafeNormal();
-	FVector VacuumForceVector = (NormalizedToMuzzle * VacuumForce) * DeltaTime;
+	FVector VacuumForceVector = (NormalizedToMuzzle * VacuumForce) * DeltaTime / Cast<AVacuumable>(HitResult.GetActor())->GetWeight();
 	return VacuumForceVector;
 }
 
