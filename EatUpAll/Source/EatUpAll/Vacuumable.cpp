@@ -39,7 +39,8 @@ void AVacuumable::ShrinkDown_Implementation(AVacuumGun* VacuumGun)
 {
 	ShrinkStartLocation = GetActorLocation();
 	ShrinkStartScale = GetActorScale3D();
-	Mesh->SetSimulatePhysics(false);
+	// 24.03.11 Contrasts on BP
+	// Mesh->SetSimulatePhysics(false);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ShrinkDownTimeline.PlayFromStart();
 	TargetVacuumGun = VacuumGun;
