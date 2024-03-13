@@ -58,6 +58,8 @@ ASlime_Control::ASlime_Control()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	FloatMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloationgPawnMovement"));
+	FloatMovement->UpdatedComponent = RootComponent;
 }
 
 
@@ -65,7 +67,15 @@ ASlime_Control::ASlime_Control()
 void ASlime_Control::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		// Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			// Add each mapping context, along with their priority values. Higher values outprioritize lower values.
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
 }
 
 void ASlime_Control::Move(const FInputActionValue& Value)
@@ -97,6 +107,9 @@ void ASlime_Control::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FVector location = this->GetActorLocation();
+
+
 }
 
 // Called to bind functionality to input
@@ -104,17 +117,50 @@ void ASlime_Control::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	check(PlayerInputComponent);
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ASlime_Control::TraceJumpPath);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ASlime_Control::SlimeJump);
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASlime_Control::Move);
+		if (JumpAction) 
+		{
+			//Jumping
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ASlime_Control::TraceJumpPath);
+			EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ASlime_Control::SlimeJump);
+		}
+		
+		if (MoveAction)
+		{
+			//Moving
+			EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASlime_Control::Move);
 
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASlime_Control::Look);
+		}
+		
+		if (LookAction)
+		{
+			//Looking
+			EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASlime_Control::Look);
 
+		}
+	}
+
+	/*InputComponent->BindAction("ParticleToggle", IE_Pressed, this, &ASlime_Control::ParticleToggle);
+
+	InputComponent->BindAxis("MoveForward", this, &ASlime_Control::MoveForward);
+	InputComponent->BindAxis("MoveRight", this, &ASlime_Control::MoveRight);
+	InputComponent->BindAxis("Turn", this, &ASlime_Control::Turn);*/
+}
+
+void ASlime_Control::PawnClientRestart()
+{
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		// Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
+		{
+			// PawnClientRestart can run more than once in an Actor's lifetime, so start by clearing out any leftover mappings.
+			Subsystem->ClearAllMappings();
+
+			// Add each mapping context, along with their priority values. Higher values outprioritize lower values.
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
 	}
 }
 
@@ -148,6 +194,33 @@ float ASlime_Control::GetJumpChargeTime(float DeltaTime)
 }
 
 void ASlime_Control::SlimeJump()
+{
+}
+
+void ASlime_Control::MoveForward(float AxisValue)
+{
+	if (FloatMovement && (FloatMovement->UpdatedComponent == RootComponent))
+	{
+		FloatMovement->AddInputVector(GetActorForwardVector() * AxisValue);
+	}
+}
+
+void ASlime_Control::MoveRight(float AxisValue)
+{
+	if (FloatMovement && (FloatMovement->UpdatedComponent == RootComponent))
+	{
+		FloatMovement->AddInputVector(GetActorRightVector() * AxisValue);
+	}
+}
+
+void ASlime_Control::Turn(float AxisValue)
+{
+	FRotator NewRotation = GetActorRotation();
+	NewRotation.Yaw += AxisValue;
+	SetActorRotation(NewRotation);
+}
+
+void ASlime_Control::ParticleToggle()
 {
 }
 

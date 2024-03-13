@@ -27,7 +27,7 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	/** Returns Floating Movement **/
-	FORCEINLINE UFloatingPawnMovement* GetFloatMovement() const { return FloatMovement; }
+	FORCEINLINE UFloatingPawnMovement* GetMovementComponent() const override { return FloatMovement; }
 	class UArrowComponent* GetArrowComponent() const { return ArrowComponent;}
 	
 
@@ -80,10 +80,10 @@ protected:
 		float MaxHP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
-		float MoveRight;
+		float MoveRight_var;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
-		float MoveForward;
+		float MoveForward_var;
 
 
 public:	
@@ -92,6 +92,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void PawnClientRestart() override;
 
 	void GetMovementDirection();
 	
@@ -109,13 +111,16 @@ public:
 
 	void SlimeJump();
 
-	void SetMoveRight(float value) { MoveRight = value; }
-	float GetMoveRight() { return MoveRight; }
+	void SetMoveRight(float value) { MoveRight_var = value; }
+	float GetMoveRight() { return MoveRight_var; }
 
-	void SetMoveForward(float value) { MoveForward = value; }
-	float GetMoveForward() { return MoveForward; }
+	void SetMoveForward(float value) { MoveForward_var = value; }
+	float GetMoveForward() { return MoveForward_var; }
 
-
+	void MoveForward(float AxisValue);
+	void MoveRight(float AxisValue);
+	void Turn(float AxisValue);
+	void ParticleToggle();
 
 
 };
