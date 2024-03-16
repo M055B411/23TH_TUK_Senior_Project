@@ -72,6 +72,7 @@ void ASlime_Control::BeginPlay()
 		// Get the Enhanced Input Local Player Subsystem from the Local Player related to our Player Controller.
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer()))
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("done")));
 			// Add each mapping context, along with their priority values. Higher values outprioritize lower values.
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
@@ -81,6 +82,11 @@ void ASlime_Control::BeginPlay()
 void ASlime_Control::Move(const FInputActionValue& Value)
 {
 	FVector2D MoveAxisVector = Value.Get<FVector2D>();
+	const bool bo = Value.Get<bool>();
+
+	if (bo) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("move")));
+	}
 
 	if (Controller != nullptr)
 	{
@@ -117,7 +123,7 @@ void ASlime_Control::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	check(PlayerInputComponent);
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 
 		if (JumpAction) 
 		{
