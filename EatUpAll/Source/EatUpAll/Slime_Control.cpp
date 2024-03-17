@@ -60,6 +60,7 @@ ASlime_Control::ASlime_Control()
 
 	FloatMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("FloationgPawnMovement"));
 	FloatMovement->UpdatedComponent = RootComponent;
+	FloatMovement->Activate();
 }
 
 
