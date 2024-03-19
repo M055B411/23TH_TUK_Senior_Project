@@ -95,7 +95,15 @@ void AVacuumPlayer::EquipVacuumGun()
 	VacuumGun = World->SpawnActor<AVacuumGun>(VacuumGunClass);
 	VacuumGun->SetOwner(this);
 	VacuumGun->SetInstigator(this);
-	VacuumGun->AttachToComponent(GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
+	if (this->IsLocallyControlled())
+	{
+		VacuumGun->AttachToComponent(GetMesh1P(), AttachmentRules, FName(TEXT("LowerGrip")));
+	}
+	else 
+	{
+		VacuumGun->AttachToComponent(GetMesh(), AttachmentRules, FName(TEXT("LowerGrip")));
+	}
+	//VacuumGun->AttachToComponent(GetMesh1P(), AttachmentRules, FName(TEXT("UpperGrip")));
 	bHasRifle = true;
 }
 
