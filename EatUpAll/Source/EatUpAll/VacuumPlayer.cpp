@@ -40,7 +40,7 @@ void AVacuumPlayer::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	// EquipVacuumGun();
+	EquipVacuumGun();
 	
 }
 
