@@ -114,6 +114,9 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 			{
 				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
 				HitResult.GetComponent()->SetEnableGravity(false);
+
+				UE_LOG(LogTemp, Warning, TEXT("Suck"));
+
 				if (CanAbsorbThisActor(HitResult))
 				{
 					Absorb(HitResult.GetActor());
