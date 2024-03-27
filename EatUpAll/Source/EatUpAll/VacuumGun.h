@@ -47,6 +47,7 @@ protected:
 
 	void TraceForVacuum();
 
+	// UFUNCTION(NetMulticatst)
 	void PullAndAbsorb(float DeltaTime);
 
 	bool CanPlayerSeeThisObject(FHitResult& HitResult);
