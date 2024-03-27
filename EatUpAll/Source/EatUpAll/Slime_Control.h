@@ -64,6 +64,7 @@ protected:
 
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
+	void EndMove(const struct FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const struct FInputActionValue& Value);
@@ -71,7 +72,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 		FVector TargetLocation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
-		float HalfHeight;
+		FRotator TargetRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+		float HalfHeight = 40.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
+		float PathTraceLength = 50.f;
 
 
 public:	
@@ -85,17 +90,17 @@ public:
 	
 	void TraceMovement();
 
-	void TraceFloor();
+	void TraceFloor(FHitResult& ForwardHit1, FHitResult& ForwardHit2, FHitResult& ForwardHit3);
 
-	void SlimeMove(FVector2D Axis);
+	void SlimeMove();
 
 	void IdentifyVacuumables();
 
-	void TraceJumpPath();
+	void TraceJumpPath(const FInputActionValue& Value);
 
 	float GetJumpChargeTime(float DeltaTime);
 
-	void SlimeJump();
+	void SlimeJump(const FInputActionValue& Value);
 
 	void SetMoveRight(float value) { MoveRight_var = value; }
 	float GetMoveRight() { return MoveRight_var; }

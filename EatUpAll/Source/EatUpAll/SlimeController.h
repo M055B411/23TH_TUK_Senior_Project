@@ -13,11 +13,15 @@ UCLASS()
 class EATUPALL_API ASlimeController : public APlayerController
 {
 	GENERATED_BODY()
+
+private:
 	
 public:
 	virtual void SetupInputComponent() override;
 
-	UPROPERTY()
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputMappingContext* MappingContext;
 
 	UPROPERTY()
@@ -27,4 +31,5 @@ public:
 	UPROPERTY()
 		class UInputAction* LookAction;
 
+	
 };

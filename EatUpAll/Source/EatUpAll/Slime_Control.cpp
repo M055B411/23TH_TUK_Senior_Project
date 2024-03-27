@@ -67,26 +67,41 @@ void ASlime_Control::BeginPlay()
 	Super::BeginPlay();
 	ASlimeController* AC = GetController<ASlimeController>();
 	check(AC);
+	TargetLocation = this->GetActorLocation();
 }
 
 void ASlime_Control::Move(const FInputActionValue& Value)
 {
 	FVector2D MoveAxisVector = Value.Get<FVector2D>();
+	if (Controller != nullptr) 
+	{
+		SetMoveForward(MoveAxisVector.Y);
+		SetMoveRight(MoveAxisVector.X);
+		
+	}
+}
 
-	TraceMovement();
-	SlimeMove(MoveAxisVector);
+void ASlime_Control::EndMove(const FInputActionValue& Value)
+{
+	FVector2D MoveAxisVector = Value.Get<FVector2D>();
+	if (Controller != nullptr)
+	{
+		SetMoveForward(MoveAxisVector.Y);
+		SetMoveRight(MoveAxisVector.X);
+
+	}
 }
 
 void ASlime_Control::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
+	
 	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		AddControllerPitchInput(-LookAxisVector.Y);
 	}
 }
 
@@ -95,9 +110,9 @@ void ASlime_Control::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector location = this->GetActorLocation();
-
-
+	TraceMovement();
+	SlimeMove();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f,%f"), GetMoveRight(), GetMoveForward()));
 }
 
 // Called to bind functionality to input
@@ -110,7 +125,8 @@ void ASlime_Control::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	check(EC);
 	check(AC);
 	EC->BindAction(AC->MoveAction, ETriggerEvent::Triggered, this, &ASlime_Control::Move);
-	EC->BindAction(AC->JumpAction, ETriggerEvent::Started, this, &ASlime_Control::TraceJumpPath);
+	EC->BindAction(AC->MoveAction, ETriggerEvent::Completed, this, &ASlime_Control::EndMove);
+	EC->BindAction(AC->JumpAction, ETriggerEvent::Triggered, this, &ASlime_Control::TraceJumpPath);
 	EC->BindAction(AC->JumpAction, ETriggerEvent::Completed, this, &ASlime_Control::SlimeJump);
 	EC->BindAction(AC->LookAction, ETriggerEvent::Triggered, this, &ASlime_Control::Look);
 
@@ -124,37 +140,83 @@ void ASlime_Control::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 FVector ASlime_Control::GetMovementDirection()
 {
+	FVector Result = (FVector)(0,0,0);
 	float angle = GetCoreBody()->GetComponentRotation().Roll;
+	float Roll = GetControlRotation().Roll;
+	float Pitch = GetControlRotation().Pitch;
+	float Yaw = GetControlRotation().Yaw;
+
 	if (angle <= 45) {
-		UKismetMathLibrary::GetForwardVector((FRotator)(0, 0, GetControlRotation().Yaw));
+		Result = UKismetMathLibrary::Normal((UKismetMathLibrary::GetForwardVector((FRotator)(0,0,Yaw)) * GetMoveForward()) 
+			+ (UKismetMathLibrary::GetRightVector((FRotator)(Roll, 0, Yaw)) * GetMoveRight()));
 	}
 	else if (angle <= 135) {
 
 	}
-	else {
+	else 
+	{
 
 	}
-	return (FVector)(0, 0, 0);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f,%f"), Result.X, Result.Y, Result.Z));
+	return Result;
 }
 
 void ASlime_Control::TraceMovement()
 {
+	FHitResult ForwardHIt1, ForwardHit2, ForwardHit3;
+	TraceFloor(ForwardHIt1, ForwardHit2, ForwardHit3);
+	TargetLocation = (FVector)(ForwardHIt1.Location + (ForwardHIt1.Normal * HalfHeight));
+	TargetRotation = UKismetMathLibrary::MakeRotationFromAxes(UKismetMathLibrary::GetDirectionUnitVector(ForwardHIt1.Location, ForwardHit2.Location), UKismetMathLibrary::GetDirectionUnitVector(ForwardHIt1.Location, ForwardHit3.Location), ForwardHIt1.Normal);
 }
 
-void ASlime_Control::TraceFloor()
+void ASlime_Control::TraceFloor(FHitResult& ForwardHit1, FHitResult& ForwardHit2, FHitResult& ForwardHit3)
 {
+	FVector StartLocation = this->GetActorLocation();
+	FVector EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 100.f) + (this->GetActorUpVector() * -50.f))
+		* PathTraceLength) + StartLocation);
+	FHitResult OutHit;
+	if(GetWorld()->LineTraceSingleByChannel(OutHit, StartLocation, EndLocation, ECC_Visibility))
+	{
+		ForwardHit1 = OutHit;
+		EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 110.f) + (this->GetActorUpVector() * -50.f))
+			* PathTraceLength) + StartLocation);
+		if (GetWorld()->LineTraceSingleByChannel(OutHit, StartLocation, EndLocation, ECC_Visibility)) {
+			ForwardHit2 = OutHit;
+			EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 110.f) + (this->GetActorUpVector() * -50.f) 
+				+ (UKismetMathLibrary::RotateAngleAxis(StartLocation,90.f,EndLocation)*10.f)) * PathTraceLength) + StartLocation);
+			if (GetWorld()->LineTraceSingleByChannel(OutHit, StartLocation, EndLocation, ECC_Visibility)) {
+				ForwardHit3 = OutHit;
+			}
+		}
+	}
+	DrawDebugLine(
+		GetWorld(),
+		StartLocation,
+		ForwardHit1.Location,
+		FColor(255, 0, 0),
+		false, -1, 0,
+		1.333
+	);
+
 }
 
-void ASlime_Control::SlimeMove(FVector2D Axis)
+void ASlime_Control::SlimeMove()
 {
+	if((UKismetMathLibrary::Abs(GetMoveForward()) + UKismetMathLibrary::Abs(GetMoveRight())) > 0 && UKismetMathLibrary::Vector_Distance(TargetLocation,this->GetActorLocation())> 2)
+	{
+		this->AddMovementInput(UKismetMathLibrary::GetDirectionUnitVector(this->GetActorLocation(), TargetLocation),MoveScale);
+		this->K2_SetActorRotation(UKismetMathLibrary::RLerp(this->GetActorRotation(), TargetRotation,0.05, true),false);
+	}
 }
 
 void ASlime_Control::IdentifyVacuumables()
 {
 }
 
-void ASlime_Control::TraceJumpPath()
+void ASlime_Control::TraceJumpPath(const FInputActionValue& Value)
 {
+	bool val = Value.Get<bool>();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%d"), val));
 }
 
 float ASlime_Control::GetJumpChargeTime(float DeltaTime)
@@ -162,7 +224,7 @@ float ASlime_Control::GetJumpChargeTime(float DeltaTime)
 	return 0.0f;
 }
 
-void ASlime_Control::SlimeJump()
+void ASlime_Control::SlimeJump(const FInputActionValue& Value)
 {
 }
 
