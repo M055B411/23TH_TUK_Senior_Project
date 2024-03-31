@@ -83,7 +83,7 @@ void AVacuumGun::Vacuum(float DeltaTime)
 		TraceForVacuum();
 
 		//Pull & SetProperties of caught actors
-		PullAndAbsorb(DeltaTime);
+		Server_PullAndAbsorb(DeltaTime);
 
 		// if trace miss, set properties of the last frame hit actors
 		CancelVacuumEffect();
@@ -115,7 +115,37 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
 				HitResult.GetComponent()->SetEnableGravity(false);
 
-				UE_LOG(LogTemp, Warning, TEXT("Suck"));
+				if (CanAbsorbThisActor(HitResult))
+				{
+					Absorb(HitResult.GetActor());
+				}
+			}
+		}
+	}
+}
+
+void AVacuumGun::Server_PullAndAbsorb_Implementation(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Server_PullAndAbsorb_Implementation Has Been Called"));
+
+	Multi_PullAndAbsorb(DeltaTime);
+}
+
+void AVacuumGun::Multi_PullAndAbsorb_Implementation(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Multi_PullAndAbsorb_Implementation Has Been Called"));
+
+	for (FHitResult HitResult : VacuumHitResultArray)
+	{
+		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitResult.GetActor());
+		if (HitVacuumable)
+		{
+			CurrentFrameHitActors.AddUnique(HitResult.GetActor());
+
+			if (CanPlayerSeeThisObject(HitResult))
+			{
+				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
+				HitResult.GetComponent()->SetEnableGravity(false);
 
 				if (CanAbsorbThisActor(HitResult))
 				{
@@ -224,6 +254,7 @@ void AVacuumGun::FireAmmo()
 		
 	}
 }
+
 FVector AVacuumGun::GetTraceStartLocation()
 {
 	if (GetOwner())
