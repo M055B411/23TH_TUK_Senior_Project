@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Engine/DamageEvents.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 // Sets default values
@@ -122,8 +123,7 @@ void ASlime_Control::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	UEnhancedInputComponent* EC = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	ASlimeController* AC = GetController<ASlimeController>();
-	check(EC);
-	check(AC);
+	check(EC&&AC);
 	EC->BindAction(AC->MoveAction, ETriggerEvent::Triggered, this, &ASlime_Control::Move);
 	EC->BindAction(AC->MoveAction, ETriggerEvent::Completed, this, &ASlime_Control::EndMove);
 	EC->BindAction(AC->JumpAction, ETriggerEvent::Triggered, this, &ASlime_Control::TraceJumpPath);
@@ -147,8 +147,10 @@ FVector ASlime_Control::GetMovementDirection()
 	float Yaw = GetControlRotation().Yaw;
 
 	if (angle <= 45) {
-		Result = UKismetMathLibrary::Normal((UKismetMathLibrary::GetForwardVector((FRotator)(0,0,Yaw)) * GetMoveForward()) 
-			+ (UKismetMathLibrary::GetRightVector((FRotator)(Roll, 0, Yaw)) * GetMoveRight()));
+		Result = UKismetMathLibrary::Normal((/*UKismetMathLibrary::GetForwardVector((FRotator)(0,0,Yaw))*/
+			this->GetActorForwardVector() * GetMoveForward()) 
+			+ (/*UKismetMathLibrary::GetRightVector((FRotator)(Roll, 0, Yaw))*/
+				this->GetActorRightVector() * GetMoveRight()));
 	}
 	else if (angle <= 135) {
 
@@ -164,7 +166,52 @@ FVector ASlime_Control::GetMovementDirection()
 void ASlime_Control::TraceMovement()
 {
 	FHitResult ForwardHIt1, ForwardHit2, ForwardHit3;
-	TraceFloor(ForwardHIt1, ForwardHit2, ForwardHit3);
+	/*TraceFloor(ForwardHIt1, ForwardHit2, ForwardHit3);*/
+	FVector StartLocation = this->GetActorLocation();
+	FVector EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 1000.f) + (this->GetActorUpVector() * -500.f))
+		* PathTraceLength) + StartLocation);
+	FHitResult OutHit;
+	TArray<AActor*> ActorstoIgnore;
+	ActorstoIgnore.Add(this);
+	if (UKismetSystemLibrary::LineTraceSingle(this, StartLocation, EndLocation, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility), false, ActorstoIgnore, EDrawDebugTrace::None, OutHit, true))
+	{
+		ForwardHIt1 = OutHit;
+		EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 1100.f) + (this->GetActorUpVector() * -500.f))
+			* PathTraceLength) + StartLocation);
+		DrawDebugLine(
+			GetWorld(),
+			StartLocation,
+			OutHit.Location,
+			FColor(255, 0, 0),
+			false, -1, 0,
+			1.333
+		);
+		if (UKismetSystemLibrary::LineTraceSingle(this, StartLocation, EndLocation, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility), false, ActorstoIgnore, EDrawDebugTrace::None, OutHit, true)) {
+			ForwardHit2 = OutHit;
+			EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 1100.f) + (this->GetActorUpVector() * -500.f)
+				+ (UKismetMathLibrary::RotateAngleAxis(StartLocation, 90.f, EndLocation) * 10.f)) * PathTraceLength) + StartLocation);
+			DrawDebugLine(
+				GetWorld(),
+				StartLocation,
+				OutHit.Location,
+				FColor(255, 0, 0),
+				false, -1, 0,
+				1.333
+			);
+			if (UKismetSystemLibrary::LineTraceSingle(this, StartLocation, EndLocation, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility), false, ActorstoIgnore, EDrawDebugTrace::None, OutHit, true)) {
+				ForwardHit3 = OutHit;
+				DrawDebugLine(
+					GetWorld(),
+					StartLocation,
+					OutHit.Location,
+					FColor(255, 0, 0),
+					false, -1, 0,
+					1.333
+				);
+			}
+		}
+	}
+	
 	TargetLocation = (FVector)(ForwardHIt1.Location + (ForwardHIt1.Normal * HalfHeight));
 	TargetRotation = UKismetMathLibrary::MakeRotationFromAxes(UKismetMathLibrary::GetDirectionUnitVector(ForwardHIt1.Location, ForwardHit2.Location), UKismetMathLibrary::GetDirectionUnitVector(ForwardHIt1.Location, ForwardHit3.Location), ForwardHIt1.Normal);
 }

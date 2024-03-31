@@ -74,9 +74,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 		FRotator TargetRotation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
-		float HalfHeight = 40.f;
+		float HalfHeight = 100.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
-		float PathTraceLength = 50.f;
+		float PathTraceLength = 150.f;
 
 
 public:	
