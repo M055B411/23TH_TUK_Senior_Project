@@ -84,6 +84,7 @@ void AVacuumGun::Vacuum(float DeltaTime)
 
 		//Pull & SetProperties of caught actors
 		Server_PullAndAbsorb(DeltaTime);
+		//PullAndAbsorb(DeltaTime);
 
 		// if trace miss, set properties of the last frame hit actors
 		CancelVacuumEffect();
