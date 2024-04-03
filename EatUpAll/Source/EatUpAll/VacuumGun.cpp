@@ -5,7 +5,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Vacuumable.h"
 #include "Camera/CameraComponent.h"
-#include "Components/TextBlock.h"
+// #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "VacuumProjectile.h"
 
@@ -84,7 +84,6 @@ void AVacuumGun::Vacuum(float DeltaTime)
 
 		//Pull & SetProperties of caught actors
 		Server_PullAndAbsorb(DeltaTime);
-		//PullAndAbsorb(DeltaTime);
 
 		// if trace miss, set properties of the last frame hit actors
 		CancelVacuumEffect();

@@ -4,4 +4,3 @@
 #include "VacuumInterface.h"
 
 // Add default functionality here for any IVacuumInterface functions that are not pure virtual.
-
