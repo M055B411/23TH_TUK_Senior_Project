@@ -31,5 +31,4 @@ public:
 	UPROPERTY()
 		class UInputAction* LookAction;
 
-	
 };

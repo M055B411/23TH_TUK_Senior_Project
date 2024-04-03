@@ -16,7 +16,6 @@ class EATUPALL_API ASlime_Control : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ASlime_Control();
-
 	class USkeletalMeshComponent* GetCoreBody() { return SlimeCore; }
 
 	/** Returns CameraBoom subobject **/
@@ -29,6 +28,7 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 		class USkeletalMeshComponent* SlimeCore;
 

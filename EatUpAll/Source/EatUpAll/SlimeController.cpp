@@ -5,6 +5,8 @@
 #include "InputAction.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 static void MapKey(UInputMappingContext* InputMappingContext, UInputAction* InputAction, FKey Key,
 	bool bNegate = false,
@@ -31,8 +33,6 @@ void ASlimeController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	
-
 	//// Create these objects here and not in constructor because we only need them on the client.
 	//MappingContext = NewObject<UInputMappingContext>(this);
 
@@ -56,3 +56,4 @@ void ASlimeController::BeginPlay()
 {
 	Super::BeginPlay();
 }
+

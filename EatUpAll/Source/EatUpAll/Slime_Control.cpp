@@ -5,6 +5,7 @@
 #include "SlimeController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -113,7 +114,7 @@ void ASlime_Control::Tick(float DeltaTime)
 
 	TraceMovement();
 	SlimeMove();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f,%f"), GetMoveRight(), GetMoveForward()));
+	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, FString::Printf(TEXT("INPUT: %f,%f"), GetMoveRight(), GetMoveForward()));
 }
 
 // Called to bind functionality to input
@@ -145,12 +146,12 @@ FVector ASlime_Control::GetMovementDirection()
 	float Roll = GetControlRotation().Roll;
 	float Pitch = GetControlRotation().Pitch;
 	float Yaw = GetControlRotation().Yaw;
-
+	Result = UKismetMathLibrary::Normal((UKismetMathLibrary::GetForwardVector((FRotator)(0,0,Yaw))
+		* GetMoveForward())
+		+ (UKismetMathLibrary::GetRightVector((FRotator)(Roll, 0, Yaw))
+			* GetMoveRight()));
 	if (angle <= 45) {
-		Result = UKismetMathLibrary::Normal((/*UKismetMathLibrary::GetForwardVector((FRotator)(0,0,Yaw))*/
-			this->GetActorForwardVector() * GetMoveForward()) 
-			+ (/*UKismetMathLibrary::GetRightVector((FRotator)(Roll, 0, Yaw))*/
-				this->GetActorRightVector() * GetMoveRight()));
+		
 	}
 	else if (angle <= 135) {
 
@@ -159,7 +160,7 @@ FVector ASlime_Control::GetMovementDirection()
 	{
 
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f,%f"), Result.X, Result.Y, Result.Z));
+	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, FString::Printf(TEXT("DIR: %f,%f,%f"), Result.X, Result.Y, Result.Z));
 	return Result;
 }
 
@@ -168,46 +169,32 @@ void ASlime_Control::TraceMovement()
 	FHitResult ForwardHIt1, ForwardHit2, ForwardHit3;
 	/*TraceFloor(ForwardHIt1, ForwardHit2, ForwardHit3);*/
 	FVector StartLocation = this->GetActorLocation();
-	FVector EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 1000.f) + (this->GetActorUpVector() * -500.f))
+	FVector Direction = GetMovementDirection();
+	FVector EndLocation = (FVector)((UKismetMathLibrary::Normal((Direction * 1000.f) + (this->GetActorUpVector() * -500.f))
 		* PathTraceLength) + StartLocation);
+	
+	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, FString::Printf(TEXT("Start: %f,%f,%f"), StartLocation.X, StartLocation.Y, StartLocation.Z));
+	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, FString::Printf(TEXT("DIr to END : %f,%f,%f"), Direction.X, Direction.Y, Direction.Z));
+	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, FString::Printf(TEXT("END: %f,%f,%f"), EndLocation.X, EndLocation.Y, EndLocation.Z));
+	
 	FHitResult OutHit;
 	TArray<AActor*> ActorstoIgnore;
 	ActorstoIgnore.Add(this);
 	if (UKismetSystemLibrary::LineTraceSingle(this, StartLocation, EndLocation, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility), false, ActorstoIgnore, EDrawDebugTrace::None, OutHit, true))
 	{
 		ForwardHIt1 = OutHit;
-		EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 1100.f) + (this->GetActorUpVector() * -500.f))
+		EndLocation = (FVector)((UKismetMathLibrary::Normal((Direction * 1100.f) + (this->GetActorUpVector() * -500.f))
 			* PathTraceLength) + StartLocation);
-		DrawDebugLine(
-			GetWorld(),
-			StartLocation,
-			OutHit.Location,
-			FColor(255, 0, 0),
-			false, -1, 0,
-			1.333
-		);
-		if (UKismetSystemLibrary::LineTraceSingle(this, StartLocation, EndLocation, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility), false, ActorstoIgnore, EDrawDebugTrace::None, OutHit, true)) {
+		
+		if (UKismetSystemLibrary::LineTraceSingle(this, StartLocation, EndLocation, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility), false, ActorstoIgnore, EDrawDebugTrace::ForDuration, OutHit, true)) {
 			ForwardHit2 = OutHit;
-			EndLocation = (FVector)((UKismetMathLibrary::Normal((GetMovementDirection() * 1100.f) + (this->GetActorUpVector() * -500.f)
-				+ (UKismetMathLibrary::RotateAngleAxis(StartLocation, 90.f, EndLocation) * 10.f)) * PathTraceLength) + StartLocation);
-			DrawDebugLine(
-				GetWorld(),
-				StartLocation,
-				OutHit.Location,
-				FColor(255, 0, 0),
-				false, -1, 0,
-				1.333
-			);
+			EndLocation = (FVector)((UKismetMathLibrary::Normal(
+				(Direction * 1000.f) + (this->GetActorUpVector() * -500.f)
+				+ (UKismetMathLibrary::RotateAngleAxis(Direction, 90.f, this->GetActorUpVector()) * 100.f)) * PathTraceLength) + StartLocation);
+			
 			if (UKismetSystemLibrary::LineTraceSingle(this, StartLocation, EndLocation, UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_Visibility), false, ActorstoIgnore, EDrawDebugTrace::None, OutHit, true)) {
 				ForwardHit3 = OutHit;
-				DrawDebugLine(
-					GetWorld(),
-					StartLocation,
-					OutHit.Location,
-					FColor(255, 0, 0),
-					false, -1, 0,
-					1.333
-				);
+				
 			}
 		}
 	}
@@ -251,7 +238,9 @@ void ASlime_Control::SlimeMove()
 {
 	if((UKismetMathLibrary::Abs(GetMoveForward()) + UKismetMathLibrary::Abs(GetMoveRight())) > 0 && UKismetMathLibrary::Vector_Distance(TargetLocation,this->GetActorLocation())> 2)
 	{
-		this->AddMovementInput(UKismetMathLibrary::GetDirectionUnitVector(this->GetActorLocation(), TargetLocation),MoveScale);
+		FVector direction = UKismetMathLibrary::GetDirectionUnitVector(this->GetActorLocation(), TargetLocation);
+		GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, FString::Printf(TEXT("DIrection : %f,%f,%f"), direction.X, direction.Y, direction.Z));
+		this->AddMovementInput(direction,MoveScale);
 		this->K2_SetActorRotation(UKismetMathLibrary::RLerp(this->GetActorRotation(), TargetRotation,0.05, true),false);
 	}
 }
