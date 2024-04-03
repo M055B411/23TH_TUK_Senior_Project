@@ -33,6 +33,7 @@ void AVacuumGun::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Vacuum(DeltaTime);
+	Cooldown();
 }
 
 void AVacuumGun::AddToAmmo_Implementation(AVacuumable* Vacuumable)
@@ -77,9 +78,8 @@ void AVacuumGun::GetOwnerInterface()
 
 void AVacuumGun::Vacuum(float DeltaTime)
 {
-	if (IsVacuuming && OwnerInterface && !CanFire())
+	if (IsVacuuming && OwnerInterface && !CanFire() && !bIsOverloaded)
 	{
-
 		TraceForVacuum();
 
 		//Pull & SetProperties of caught actors
@@ -90,6 +90,9 @@ void AVacuumGun::Vacuum(float DeltaTime)
 
 		LastFrameHitActors = CurrentFrameHitActors;
 		CurrentFrameHitActors.Empty();
+
+		CurChargetime += GetWorld()->GetDeltaSeconds();
+		CheckOverloaded();
 	}
 }
 
@@ -322,6 +325,27 @@ void AVacuumGun::PlayVacuumendSound()
 	if (Vacuumsoundend)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundend, GetActorLocation());
+	}
+}
+
+void AVacuumGun::CheckOverloaded()
+{
+	if (CurChargetime >= MaxChargeTime)
+	{
+		CurChargetime = MaxChargeTime;
+		bIsOverloaded = true;
+	}
+}
+
+void AVacuumGun::Cooldown()
+{
+	if(bIsOverloaded)
+	{
+		CurChargetime -= GetWorld()->GetDeltaSeconds();
+		if (CurChargetime < 0) {
+			CurChargetime = 0;
+			bIsOverloaded = false;
+		}
 	}
 }
 

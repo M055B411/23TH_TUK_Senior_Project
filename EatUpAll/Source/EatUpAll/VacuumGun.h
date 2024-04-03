@@ -34,7 +34,6 @@ public:
 
 protected:
 
-
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
@@ -76,6 +75,10 @@ protected:
 	void PlayVacuumonSound();
 
 	void PlayVacuumendSound();
+
+	void CheckOverloaded();
+
+	void Cooldown();
 
 	FVector GetTraceStartLocation();
 
@@ -160,5 +163,15 @@ protected:
 	USoundBase* PopSound;
 
 	IVacuumInterface* OwnerInterface;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+		float MaxChargeTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+		float CurChargetime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+		bool bIsOverloaded;
+
 
 };

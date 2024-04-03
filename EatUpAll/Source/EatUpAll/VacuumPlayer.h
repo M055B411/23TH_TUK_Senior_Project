@@ -15,6 +15,7 @@ class UCameraComponent;
 class UAnimMontage;
 class USoundBase;
 class AVacuumGun;
+class UHunterWidget;
 class UInputAction;
 class UInputMappingContext;
 
@@ -95,4 +96,11 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	bool bHasRifle;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<UHunterWidget> PlayerHUDClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD", meta = (AllowPrivateAccess = "true"))
+		UHunterWidget* PlayerHUD;
+
+	
 };
