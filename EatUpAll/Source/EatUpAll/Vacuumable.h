@@ -91,6 +91,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Vacuum")
 		UCurveFloat* ExpandToNormalCurve;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CoreItem")
+		bool bisPhaseItem;
+
 	FTimeline ShrinkDownTimeline;
 
 	FTimeline ExpandToNormalTimeline;

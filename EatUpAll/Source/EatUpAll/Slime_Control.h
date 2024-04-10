@@ -7,6 +7,7 @@
 #include "Slime_Control.generated.h"
 
 class UArrowComponent;
+class ASlime_Body;
 
 UCLASS()
 class EATUPALL_API ASlime_Control : public APawn
@@ -16,18 +17,20 @@ class EATUPALL_API ASlime_Control : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ASlime_Control();
+
 	class USkeletalMeshComponent* GetCoreBody() { return SlimeCore; }
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	class UArrowComponent* GetArrowComponent() const { return ArrowComponent;}
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+		class UStaticMeshComponent* Collision;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 		class USkeletalMeshComponent* SlimeCore;
@@ -40,16 +43,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
 
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, meta = (AllowPrivateAccess = "true"))
-		float HP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat, meta = (AllowPrivateAccess = "true"))
-		float MaxHP;
-
-	UPROPERTY()
-		class UArrowComponent* ArrowComponent;
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Character, meta = (AllowPrivateAcess = "true"))
 		class UFloatingPawnMovement* FloatMovement;
 
@@ -61,6 +54,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Movement, meta = (AllowPrivateAccess = "true"))
 		float MoveForward_var;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Body", meta = (AllowPrivateAccess = "true"))
+		bool bHasBody;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Body", meta = (AllowPrivateAccess = "true"))
+		TSubclassOf<ASlime_Body> BodyClass;
+
+	UPROPERTY(VisibleAnyWhere, BlueprintReadWrite, Category = "Body", meta = (AllowPrivateAccess = "true"))
+		ASlime_Body* SlimeBody;
 
 	/** Called for movement input */
 	void Move(const struct FInputActionValue& Value);
@@ -88,6 +90,8 @@ public:
 
 	FVector GetMovementDirection();
 	
+	void MakeBody();
+
 	void TraceMovement();
 
 	void TraceFloor(FHitResult& ForwardHit1, FHitResult& ForwardHit2, FHitResult& ForwardHit3);

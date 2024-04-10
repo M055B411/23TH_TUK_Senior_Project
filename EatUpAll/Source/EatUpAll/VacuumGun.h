@@ -62,6 +62,9 @@ protected:
 
 	void TraceForAbsorb();
 
+	UFUNCTION(BlueprintCallable)
+	void TraceForDamage();
+
 	void Absorb(AActor* HitActor);
 
 	bool CanAbsorbThisActor(FHitResult HitResult);
@@ -98,6 +101,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesForVacuumTrace;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesForDamageTrace;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypesForVisibiltyTrace;

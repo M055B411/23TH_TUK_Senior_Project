@@ -179,6 +179,15 @@ void AVacuumGun::TraceForAbsorb()
 	UKismetSystemLibrary::SphereTraceMultiForObjects(this, TraceCenter, TraceCenter, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::None, AbsorbHitResultArray, true);
 }
 
+void AVacuumGun::TraceForDamage()
+{
+	FVector TraceCenter = GetTraceStartLocation();
+	FHitResult HitResult;
+	UKismetSystemLibrary::SphereTraceSingleForObjects(this, TraceCenter, TraceCenter, VacuumTraceRadius, ObjectTypesForDamageTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, HitResult, true);
+	//if(HitResult.)
+	//UGameplayStatics::ApplyPointDamage(HitResult.GetActor(), 50.0f, HitResult.GetActor()->GetActorLocation(), HitResult, nullptr, this, nullptr);
+}
+
 void AVacuumGun::Absorb(AActor* HitActor)
 {
 	if (IsVacuuming && OwnerInterface)

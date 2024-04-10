@@ -27,14 +27,18 @@ private:
 	bool P2Excavate;
 
 public:
-	void SetisSlimeAlive(bool isvalid) { isSlimeAlive = isvalid; }
+	virtual void BeginPlay() override;
 
-	void SetRemainHunters(int32 number) { RemainHunters = number; }
+	virtual void Tick(float deltatime) override;
 
-	void SetIsSlimePhaseTwo(bool isvalid) { isSlimePhaseTwo = isvalid; }
+	void SetisSlimeAlive(bool isvalid);
 
-	void SetP1Excavate(bool isvalid) { P1Excavate = isvalid; }
-	void SetP2Excavate(bool isvalid) { P2Excavate = isvalid; }
+	void SetRemainHunters(int32 number);
+
+	void SetIsSlimePhaseTwo(bool isvalid);
+
+	void SetP1Excavate(bool isvalid);
+	void SetP2Excavate(bool isvalid);
 
 	void CountRemainHunter();
 

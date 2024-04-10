@@ -3,9 +3,11 @@
 
 #include "Slime_Control.h"
 #include "SlimeController.h"
+#include "Slime_Body.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/SphereComponent.h"
+
 #include "Components/SkeletalMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -19,29 +21,25 @@
 // Sets default values
 ASlime_Control::ASlime_Control()
 {
+	Collision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Collision"));
+	SetRootComponent(Collision);
+	Collision->SetVisibleFlag(true);
+
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	SlimeCore = CreateOptionalDefaultSubobject<USkeletalMeshComponent>(TEXT("CoreBody"));
-	RootComponent = SlimeCore;
-	SlimeCore->AlwaysLoadOnClient = true;
-	SlimeCore->AlwaysLoadOnServer = true;
-	SlimeCore->bOwnerNoSee = false;
-	SlimeCore->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPose;
-	SlimeCore->bCastDynamicShadow = true;
-	SlimeCore->bAffectDynamicIndirectLighting = true;
-	SlimeCore->PrimaryComponentTick.TickGroup = TG_PrePhysics;
-	static FName MeshCollisionProfileName(TEXT("Slime"));
-	SlimeCore->SetCollisionProfileName(MeshCollisionProfileName);
-	SlimeCore->SetGenerateOverlapEvents(true);
-	SlimeCore->SetCanEverAffectNavigation(false);
-
-	ArrowComponent = CreateEditorOnlyDefaultSubobject<UArrowComponent>(TEXT("Arrow"));
-	//ArrowComponent->ArrowColor = FColor(150, 200, 255);
-	//ArrowComponent->bTreatAsASprite = true;
-	ArrowComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	//ArrowComponent->bIsScreenSizeScaled = true;
-	//ArrowComponent->SetSimulatePhysics(false);
+	SlimeCore->SetupAttachment(Collision);
+	//SlimeCore->AlwaysLoadOnClient = true;
+	//SlimeCore->AlwaysLoadOnServer = true;
+	//SlimeCore->bOwnerNoSee = false;
+	//SlimeCore->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPose;
+	//SlimeCore->bCastDynamicShadow = true;
+	//SlimeCore->bAffectDynamicIndirectLighting = true;
+	//SlimeCore->PrimaryComponentTick.TickGroup = TG_PrePhysics;
+	//SlimeCore->SetCollisionProfileName(MeshCollisionProfileName);
+	//SlimeCore->SetGenerateOverlapEvents(true);
+	//SlimeCore->SetCanEverAffectNavigation(false);
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -70,6 +68,8 @@ void ASlime_Control::BeginPlay()
 	ASlimeController* AC = GetController<ASlimeController>();
 	check(AC);
 	TargetLocation = this->GetActorLocation();
+
+	MakeBody();
 }
 
 void ASlime_Control::Move(const FInputActionValue& Value)
@@ -142,26 +142,29 @@ void ASlime_Control::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 FVector ASlime_Control::GetMovementDirection()
 {
 	FVector Result = (FVector)(0,0,0);
-	float angle = GetCoreBody()->GetComponentRotation().Roll;
-	float Roll = GetControlRotation().Roll;
-	float Pitch = GetControlRotation().Pitch;
-	float Yaw = GetControlRotation().Yaw;
+	//float angle = GetCoreBody()->GetComponentRotation().Roll;
+	float Roll = this->GetActorRotation().Roll;
+	float Pitch = this->GetActorRotation().Pitch;
+	float Yaw = this->GetActorRotation().Yaw;
 	Result = UKismetMathLibrary::Normal((UKismetMathLibrary::GetForwardVector((FRotator)(0,0,Yaw))
 		* GetMoveForward())
 		+ (UKismetMathLibrary::GetRightVector((FRotator)(Roll, 0, Yaw))
 			* GetMoveRight()));
-	if (angle <= 45) {
-		
-	}
-	else if (angle <= 135) {
-
-	}
-	else 
-	{
-
-	}
 	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red, FString::Printf(TEXT("DIR: %f,%f,%f"), Result.X, Result.Y, Result.Z));
 	return Result;
+}
+
+void ASlime_Control::MakeBody()
+{
+	UWorld* World = GetWorld();
+	if (!World || !BodyClass) return;
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	SlimeBody = World->SpawnActor<ASlime_Body>(BodyClass);
+	SlimeBody->SetOwner(this);
+	SlimeBody->SetInstigator(this);
+	SlimeBody->AttachToComponent(GetCoreBody(), AttachmentRules, FName(TEXT("Core")));
+	//VacuumGun->AttachToComponent(GetMesh1P(), AttachmentRules, FName(TEXT("UpperGrip")));
+	bHasBody = true;
 }
 
 void ASlime_Control::TraceMovement()
