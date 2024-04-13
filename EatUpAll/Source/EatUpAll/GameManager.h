@@ -9,6 +9,8 @@
 /**
  * 
  */
+//DECLARE_MULTICAST_DELEGATE(FScoreChecker)
+
 UCLASS()
 class EATUPALL_API AGameManager : public ALevelScriptActor
 {

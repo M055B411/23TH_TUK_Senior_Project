@@ -81,6 +81,7 @@ void AVacuumGun::Vacuum(float DeltaTime)
 	if (IsVacuuming && OwnerInterface && !CanFire() && !bIsOverloaded)
 	{
 		TraceForVacuum();
+		//TraceForDamage();
 
 		//Pull & SetProperties of caught actors
 		Server_PullAndAbsorb(DeltaTime);
