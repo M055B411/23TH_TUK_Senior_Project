@@ -32,6 +32,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FVector GetMuzzleLocation();
 
+
+	UFUNCTION(BlueprintCallable)
+		float GetMaxCharge() { return MaxChargeTime; }
+	UFUNCTION(BlueprintCallable)
+		float GetCurCharge() { return CurChargetime; }
+
+	UFUNCTION(BlueprintCallable)
+		float GetAmmoCap() { return capacity; }
+	UFUNCTION(BlueprintCallable)
+		float GetCurAmmo() { return Ammo; }
+
 protected:
 
 	virtual void BeginPlay() override;

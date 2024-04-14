@@ -81,7 +81,7 @@ void AVacuumGun::Vacuum(float DeltaTime)
 	if (IsVacuuming && OwnerInterface && !CanFire() && !bIsOverloaded)
 	{
 		TraceForVacuum();
-		//TraceForDamage();
+		TraceForDamage();
 
 		//Pull & SetProperties of caught actors
 		Server_PullAndAbsorb(DeltaTime);
@@ -182,9 +182,11 @@ void AVacuumGun::TraceForAbsorb()
 
 void AVacuumGun::TraceForDamage()
 {
-	FVector TraceCenter = GetTraceStartLocation();
+	
 	FHitResult HitResult;
-	UKismetSystemLibrary::SphereTraceSingleForObjects(this, TraceCenter, TraceCenter, VacuumTraceRadius, ObjectTypesForDamageTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, HitResult, true);
+	FVector StartPoint = GetTraceStartLocation();
+	FVector EndPoint = GetTraceEndLocation();
+	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, VacuumHitResultArray, true,FLinearColor::Red,FLinearColor::Green, 0.0f);
 	//if(HitResult.)
 	//UGameplayStatics::ApplyPointDamage(HitResult.GetActor(), 50.0f, HitResult.GetActor()->GetActorLocation(), HitResult, nullptr, this, nullptr);
 }

@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "VacuumGun.h"
+#include "Hunter_Controller.h"
 
 // Sets default values
 AVacuumPlayer::AVacuumPlayer()
@@ -38,10 +39,7 @@ void AVacuumPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (IsLocallyControlled() && PlayerHUDClass) 
-	{
-
-	}
+	
 
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -52,6 +50,16 @@ void AVacuumPlayer::BeginPlay()
 	}
 	EquipVacuumGun();
 	
+	if (IsLocallyControlled() && PlayerHUDClass)
+	{
+		AHunter_Controller* HC = GetController<AHunter_Controller>();
+		check(HC);
+		PlayerHUD = CreateWidget<UHunterWidget>(HC, PlayerHUDClass);
+		check(PlayerHUD);
+		PlayerHUD->AddToPlayerScreen();
+		PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
+		PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
+	}
 }
 
 // Called to bind functionality to input
