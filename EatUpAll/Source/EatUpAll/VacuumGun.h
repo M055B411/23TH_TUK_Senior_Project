@@ -43,6 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		float GetCurAmmo() { return Ammo; }
 
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+		bool GetOverloaded() { return bIsOverloaded; }
+
 protected:
 
 	virtual void BeginPlay() override;

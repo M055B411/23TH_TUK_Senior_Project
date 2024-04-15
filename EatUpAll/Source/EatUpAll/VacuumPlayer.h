@@ -33,10 +33,14 @@ public:
 	// Sets default values for this character's properties
 	AVacuumPlayer();
 
+	UFUNCTION(BlueprintCallable)
+		UHunterWidget* GetPlayerHUD() { return PlayerHUD; }
 private:
 
 
 	virtual void BeginPlay();
+
+	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	void Move(const FInputActionValue& Value);
@@ -56,6 +60,7 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 		void PlayFireMontage();
+	
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	USkeletalMeshComponent* Mesh1P;
@@ -102,5 +107,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD", meta = (AllowPrivateAccess = "true"))
 		UHunterWidget* PlayerHUD;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+		float HP;
+
+
 };

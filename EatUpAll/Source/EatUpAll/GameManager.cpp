@@ -4,14 +4,11 @@
 #include "GameManager.h"
 #include "EngineUtils.h"
 #include "VacuumPlayer.h"
+#include "Slime_Control.h"
 
 void AGameManager::CountRemainHunter()
 {
-	TArray<AVacuumPlayer*> Hunters;
-	for (TActorIterator<AVacuumPlayer> It(GetWorld()); It; ++It)
-	{
-		Hunters.Add(*It);
-	}
+	
 
 	SetRemainHunters(Hunters.Num());
 }
@@ -38,11 +35,30 @@ void AGameManager::BeginPlay()
 	Super::BeginPlay();
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("GameEnd set")));
+
+	WorldTime = 0.f;
+
+	for (TActorIterator<AVacuumPlayer> It(GetWorld()); It; ++It)
+	{
+		Hunters.Add(*It);
+	}
+
+
+	for (TActorIterator<ASlime_Control> It(GetWorld()); It; ++It)
+	{
+		Slime.Add(*It);
+	}
 }
 
 void AGameManager::Tick(float deltatime)
 {
 	Super::Tick(deltatime);
+
+	WorldTime += GetWorld()->GetDeltaSeconds();
+	
+	for (int i = 0; i < Hunters.Num(); ++i) {
+		//Cast<AVacuumPlayer>(Hunters[i])->GetPlayerHUD()->SetTime(WorldTime);
+	}
 }
 
 void AGameManager::SetisSlimeAlive(bool isvalid)

@@ -351,7 +351,7 @@ void AVacuumGun::CheckOverloaded()
 
 void AVacuumGun::Cooldown()
 {
-	if(bIsOverloaded)
+	if(!IsVacuuming)
 	{
 		CurChargetime -= GetWorld()->GetDeltaSeconds();
 		if (CurChargetime < 0) {

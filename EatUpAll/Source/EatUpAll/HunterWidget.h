@@ -21,9 +21,15 @@ public:
 
 	void SetCapacity(float CurrentCap, float MaxCap);
 
+	void SetTime(float Time);
+
 	UPROPERTY(EditAnywhere, Meta = (BindWidget))
 		class UProgressBar* ChargeBar;
 
 	UPROPERTY(EditAnywhere, Meta = (BindWidget))
 		class UProgressBar* CapacityBar;
+
+	UPROPERTY(EditAnywhere, Meta = (BindWidget))
+		class UTextBlock* Time;
+
 };

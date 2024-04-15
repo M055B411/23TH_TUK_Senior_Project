@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "VacuumGun.h"
 #include "Hunter_Controller.h"
+#include "GameManager.h"
 
 // Sets default values
 AVacuumPlayer::AVacuumPlayer()
@@ -60,6 +61,13 @@ void AVacuumPlayer::BeginPlay()
 		PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
 		PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
 	}
+}
+
+void AVacuumPlayer::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
+	PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
 }
 
 // Called to bind functionality to input

@@ -28,6 +28,10 @@ private:
 
 	bool P2Excavate;
 
+	TArray<AActor*> Hunters;
+
+	TArray<AActor*> Slime;
+
 public:
 	virtual void BeginPlay() override;
 
@@ -47,4 +51,6 @@ public:
 	void EndGame();
 
 	void SummaryGame();
+
+	float WorldTime;
 };
