@@ -84,7 +84,8 @@ void AVacuumGun::Vacuum(float DeltaTime)
 		TraceForDamage();
 
 		//Pull & SetProperties of caught actors
-		Server_PullAndAbsorb(DeltaTime);
+		// Server_PullAndAbsorb(DeltaTime);
+		PullAndAbsorb(DeltaTime);
 
 		// if trace miss, set properties of the last frame hit actors
 		CancelVacuumEffect();
@@ -106,6 +107,8 @@ void AVacuumGun::TraceForVacuum()
 
 void AVacuumGun::PullAndAbsorb(float DeltaTime)
 {
+	UE_LOG(LogTemp, Warning, TEXT("PullAndAbsorb Has Been Called"));
+
 	for (FHitResult HitResult : VacuumHitResultArray)
 	{
 		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitResult.GetActor());
