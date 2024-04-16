@@ -62,6 +62,8 @@ protected:
 
 	void PullAndAbsorb(float DeltaTime);
 
+	void DamageTarget(float DeltaTime);
+
 	UFUNCTION(Server, Reliable)
 	void Server_PullAndAbsorb(float DeltaTime);
 	void Server_PullAndAbsorb_Implementation(float DeltaTime);
@@ -127,6 +129,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Vacuum")
 	TArray<FHitResult> VacuumHitResultArray;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Vacuum")
+	TArray<FHitResult> DamageHitResultArray;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Vacuum")
 	FHitResult VisibilityHitResult;
