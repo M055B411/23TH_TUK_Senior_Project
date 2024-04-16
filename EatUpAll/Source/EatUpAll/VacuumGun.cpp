@@ -86,6 +86,7 @@ void AVacuumGun::Vacuum(float DeltaTime)
 		//Pull & SetProperties of caught actors
 		// Server_PullAndAbsorb(DeltaTime);
 		PullAndAbsorb(DeltaTime);
+		DamageTarget(DeltaTime);
 
 		// if trace miss, set properties of the last frame hit actors
 		CancelVacuumEffect();
@@ -128,6 +129,16 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 				}
 			}
 		}
+	}
+}
+
+void AVacuumGun::DamageTarget(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
+
+	for (FHitResult HitResult : DamageHitResultArray)
+	{
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.0f, nullptr, nullptr,  nullptr);
 	}
 }
 
@@ -186,12 +197,9 @@ void AVacuumGun::TraceForAbsorb()
 void AVacuumGun::TraceForDamage()
 {
 	
-	FHitResult HitResult;
 	FVector StartPoint = GetTraceStartLocation();
 	FVector EndPoint = GetTraceEndLocation();
-	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, VacuumHitResultArray, true,FLinearColor::Red,FLinearColor::Green, 0.0f);
-	//if(HitResult.)
-	//UGameplayStatics::ApplyPointDamage(HitResult.GetActor(), 50.0f, HitResult.GetActor()->GetActorLocation(), HitResult, nullptr, this, nullptr);
+	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForDamageTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, DamageHitResultArray, true,FLinearColor::Red,FLinearColor::Green, 0.0f);
 }
 
 void AVacuumGun::Absorb(AActor* HitActor)
