@@ -138,7 +138,7 @@ void AVacuumGun::DamageTarget(float DeltaTime)
 
 	for (FHitResult HitResult : DamageHitResultArray)
 	{
-		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.0f, nullptr, nullptr,  nullptr);
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 0.05f, nullptr, nullptr,  nullptr);
 	}
 }
 
