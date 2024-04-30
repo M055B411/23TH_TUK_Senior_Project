@@ -13,7 +13,6 @@ class AEatUpAllGameMode : public AGameModeBase
 
 public:
 	AEatUpAllGameMode();
+
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 };
-
-
-

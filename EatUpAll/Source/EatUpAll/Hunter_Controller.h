@@ -20,5 +20,8 @@ public:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input, meta = (AllowPrivateAccess = "true"))
-		class UInputMappingContext* MappingContext;
+	class UInputMappingContext* MappingContext;
+
+protected:
+	virtual void OnNetCleanup(UNetConnection* Connection) override;
 };
