@@ -23,5 +23,5 @@ public:
 	class UInputMappingContext* MappingContext;
 
 protected:
-	virtual void OnNetCleanup(UNetConnection* Connection) override;
+	// virtual void OnNetCleanup(UNetConnection* Connection) override;
 };

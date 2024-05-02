@@ -15,12 +15,12 @@ void AHunter_Controller::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AHunter_Controller::OnNetCleanup(UNetConnection* Connection)
-{
-	UEOS_GameInstance* GameInstanceRef = Cast<UEOS_GameInstance>(GetWorld()->GetGameInstance());
-	if (GameInstanceRef)
-	{
-		GameInstanceRef->DestroySession();
-	}
-	Super::OnNetCleanup(Connection);
-}
+//void AHunter_Controller::OnNetCleanup(UNetConnection* Connection)
+//{
+//	UEOS_GameInstance* GameInstanceRef = Cast<UEOS_GameInstance>(GetWorld()->GetGameInstance());
+//	if (GameInstanceRef)
+//	{
+//		GameInstanceRef->DestroySession();
+//	}
+//	Super::OnNetCleanup(Connection);
+//}

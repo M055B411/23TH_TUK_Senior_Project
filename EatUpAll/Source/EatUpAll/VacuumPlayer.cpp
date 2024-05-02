@@ -58,16 +58,19 @@ void AVacuumPlayer::BeginPlay()
 		PlayerHUD = CreateWidget<UHunterWidget>(HC, PlayerHUDClass);
 		check(PlayerHUD);
 		PlayerHUD->AddToPlayerScreen();
-		PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
-		PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
+		// PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
+		// PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
 	}
 }
 
 void AVacuumPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
-	PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
+	if (IsLocallyControlled() && PlayerHUDClass)
+	{
+		PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
+		PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
+	}
 }
 
 // Called to bind functionality to input
