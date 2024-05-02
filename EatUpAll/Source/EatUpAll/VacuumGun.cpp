@@ -88,15 +88,15 @@ void AVacuumGun::Vacuum(float DeltaTime)
 		PullAndAbsorb(DeltaTime);
 		DamageTarget(DeltaTime);
 
-		// if trace miss, set properties of the last frame hit actors
-		CancelVacuumEffect();
-
-		LastFrameHitActors = CurrentFrameHitActors;
-		CurrentFrameHitActors.Empty();
-
 		CurChargetime += GetWorld()->GetDeltaSeconds();
-		CheckOverloaded();
 	}
+	// if trace miss, set properties of the last frame hit actors
+	CancelVacuumEffect();
+
+	LastFrameHitActors = CurrentFrameHitActors;
+	CurrentFrameHitActors.Empty();
+
+	CheckOverloaded();
 }
 
 void AVacuumGun::TraceForVacuum()
@@ -184,7 +184,8 @@ bool AVacuumGun::CanPlayerSeeThisObject(FHitResult& HitResult)
 FVector AVacuumGun::GetForceToAdd(FHitResult& HitResult, float DeltaTime)
 {
 	FVector NormalizedToMuzzle = (WeaponMesh->GetSocketLocation(FName("Muzzle")) - HitResult.GetActor()->GetActorLocation()).GetSafeNormal();
-	FVector VacuumForceVector = (NormalizedToMuzzle * VacuumForce) * DeltaTime / Cast<AVacuumable>(HitResult.GetActor())->GetWeight();
+	float distance = (WeaponMesh->GetSocketLocation(FName("Muzzle")) - HitResult.GetActor()->GetActorLocation()).Size() / 20.f;
+	FVector VacuumForceVector = (NormalizedToMuzzle * VacuumForce) * DeltaTime / (Cast<AVacuumable>(HitResult.GetActor())->GetWeight()*distance);
 	return VacuumForceVector;
 }
 
