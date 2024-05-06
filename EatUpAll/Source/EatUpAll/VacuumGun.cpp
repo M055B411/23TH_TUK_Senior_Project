@@ -103,7 +103,7 @@ void AVacuumGun::TraceForVacuum()
 {
 	FVector StartPoint = GetTraceStartLocation();
 	FVector EndPoint = GetTraceEndLocation();
-	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::None, VacuumHitResultArray, true);
+	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, VacuumHitResultArray, true, FLinearColor::Red, FLinearColor::Green, 0.0f);
 }
 
 void AVacuumGun::PullAndAbsorb(float DeltaTime)
@@ -138,7 +138,7 @@ void AVacuumGun::DamageTarget(float DeltaTime)
 
 	for (FHitResult HitResult : DamageHitResultArray)
 	{
-		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 0.05f, nullptr, nullptr,  nullptr);
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 0.5f, nullptr, nullptr,  nullptr);
 	}
 }
 
@@ -192,7 +192,7 @@ FVector AVacuumGun::GetForceToAdd(FHitResult& HitResult, float DeltaTime)
 void AVacuumGun::TraceForAbsorb()
 {
 	FVector TraceCenter = GetTraceStartLocation();
-	UKismetSystemLibrary::SphereTraceMultiForObjects(this, TraceCenter, TraceCenter, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::None, AbsorbHitResultArray, true);
+	UKismetSystemLibrary::SphereTraceMultiForObjects(this, TraceCenter, TraceCenter, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, AbsorbHitResultArray, true, FLinearColor::Red, FLinearColor::Green, 0.0f);
 }
 
 void AVacuumGun::TraceForDamage()
@@ -200,7 +200,7 @@ void AVacuumGun::TraceForDamage()
 	
 	FVector StartPoint = GetTraceStartLocation();
 	FVector EndPoint = GetTraceEndLocation();
-	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForDamageTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, DamageHitResultArray, true,FLinearColor::Red,FLinearColor::Green, 0.0f);
+	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForDamageTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::None, DamageHitResultArray, true,FLinearColor::Red,FLinearColor::Green, 0.0f);
 }
 
 void AVacuumGun::Absorb(AActor* HitActor)
