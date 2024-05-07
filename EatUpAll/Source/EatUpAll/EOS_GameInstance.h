@@ -7,6 +7,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "EOS_GameInstance.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FServerRequired);
 /**
  * 
  */
@@ -28,6 +29,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "EOS Functions")
 	void CreateEOSSession(bool bIsDedicatedServer, bool bIsLanServer, int32 NumberOfPublicConnections);
+	// void CreateEOSSession(bool bIsDedicatedServer, bool bIsLanServer, int32 NumberOfPublicConnections, int64 ServerPort, FString RegionInfo);
 
 	UFUNCTION(BlueprintCallable, Category = "EOS Functions")
 	void FindSessionAndJoin();
@@ -38,6 +40,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "EOS Functions")
 	void DestroySession();
 
+	UPROPERTY(BlueprintAssignable, Category = "EOS Delegates")
+	FServerRequired PlayFabServerRequired;
+
 	TSharedPtr<FOnlineSessionSearch> SessionSearch;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "EOS Variables")
@@ -46,6 +51,6 @@ public:
 	void LoginWithEOS_Return(int32 LocalUserNum, bool bWasSuccess, const FUniqueNetId& UserID, const FString& Error);
 	void OnCreateSessionCompleted(FName SessionName, bool bWasSuccesful);
 	void OnDestroySessionCompleted(FName SessionName, bool bWasSuccesful);
-	void OnFindSessionCompleted(bool bWasSucces);
+	void OnFindSessionCompleted(bool bWasSucces, TSharedRef<FOnlineSessionSearch> OnlineSessionSearch);
 	void OnJoinSessionCompleted(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
 };

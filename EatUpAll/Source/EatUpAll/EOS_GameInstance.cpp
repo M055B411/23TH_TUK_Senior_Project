@@ -73,7 +73,7 @@ void UEOS_GameInstance::OnDestroySessionCompleted(FName SessionName, bool bWasSu
 
 }
 
-void UEOS_GameInstance::OnFindSessionCompleted(bool bWasSucces)
+void UEOS_GameInstance::OnFindSessionCompleted(bool bWasSucces, TSharedRef<FOnlineSessionSearch> OnlineSessionSearch)
 {
 	if (bWasSucces)
 	{
@@ -83,7 +83,10 @@ void UEOS_GameInstance::OnFindSessionCompleted(bool bWasSucces)
 			IOnlineSessionPtr SessionPtrRef = SubsystemRef->GetSessionInterface();
 			if (SessionPtrRef)
 			{
-				if (SessionSearch->SearchResults.Num()>0)
+				int normalen = OnlineSessionSearch->SearchResults.Num();
+				UE_LOG(LogTemp, Error, TEXT("Length %f"), float(normalen));
+
+				if (normalen>0)
 				{
 					SessionPtrRef->OnJoinSessionCompleteDelegates.AddUObject(this, &UEOS_GameInstance::OnJoinSessionCompleted);
 					SessionPtrRef->JoinSession(0, FName("MainSession"), SessionSearch->SearchResults[0]);
@@ -92,6 +95,7 @@ void UEOS_GameInstance::OnFindSessionCompleted(bool bWasSucces)
 				{
 					UE_LOG(LogTemp, Error, TEXT("Server Not Found"));
 					// CreateEOSSession(false, false, 10);
+					PlayFabServerRequired.Broadcast();
 				}
 			}
 		}
@@ -100,6 +104,7 @@ void UEOS_GameInstance::OnFindSessionCompleted(bool bWasSucces)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Server Not Found"));
 		// CreateEOSSession(false, false, 10);
+		//PlayFabServerRequired.Broadcast();
 	}
 }
 
@@ -129,6 +134,7 @@ void UEOS_GameInstance::OnJoinSessionCompleted(FName SessionName, EOnJoinSession
 }
 
 void UEOS_GameInstance::CreateEOSSession(bool bIsDedicatedServer, bool bIsLanServer, int32 NumberOfPublicConnections)
+// void UEOS_GameInstance::CreateEOSSession(bool bIsDedicatedServer, bool bIsLanServer, int32 NumberOfPublicConnections, int64 ServerPort, FString RegionInfo)
 {
 	IOnlineSubsystem *SubsystemRef = Online::GetSubsystem(this->GetWorld());
 	if (SubsystemRef)
@@ -146,6 +152,8 @@ void UEOS_GameInstance::CreateEOSSession(bool bIsDedicatedServer, bool bIsLanSer
 			SessionCreationInfo.bAllowJoinViaPresence = false;
 			SessionCreationInfo.bAllowJoinViaPresenceFriendsOnly = false;
 			SessionCreationInfo.bShouldAdvertise = true;
+			// SessionCreationInfo.Settings.Add(FName(TEXT("RegionInfo")), FOnlineSessionSetting(RegionInfo, EOnlineDataAdvertisementType::ViaOnlineService));
+			// SessionCreationInfo.Settings.Add(FName(TEXT("PortInfo")), FOnlineSessionSetting(ServerPort, EOnlineDataAdvertisementType::ViaOnlineService));
 			SessionCreationInfo.Set(SEARCH_KEYWORDS, FString("RandomHi"), EOnlineDataAdvertisementType::ViaOnlineService);
 			SessionPtrRef->OnCreateSessionCompleteDelegates.AddUObject(this, &UEOS_GameInstance::OnCreateSessionCompleted);
 			SessionPtrRef->CreateSession(0, FName("MainSession"), SessionCreationInfo);
@@ -163,10 +171,11 @@ void UEOS_GameInstance::FindSessionAndJoin()
 		if (SessionPtrRef)
 		{
 			SessionSearch = MakeShareable(new FOnlineSessionSearch());
-			SessionSearch->bIsLanQuery = false;
-			SessionSearch->MaxSearchResults = 20;
+			// SessionSearch->bIsLanQuery = false;
+			// SessionSearch->QuerySettings.Set(SEARCH_LOBBIES, false, EOnlineComparisonOp::Equals);
 			SessionSearch->QuerySettings.SearchParams.Empty();
-			SessionPtrRef->OnFindSessionsCompleteDelegates.AddUObject(this, &UEOS_GameInstance::OnFindSessionCompleted);
+			SessionSearch->MaxSearchResults = 50;
+			SessionPtrRef->OnFindSessionsCompleteDelegates.AddUObject(this, &UEOS_GameInstance::OnFindSessionCompleted, SessionSearch.ToSharedRef());
 			SessionPtrRef->FindSessions(0, SessionSearch.ToSharedRef());
 		}
 	}
