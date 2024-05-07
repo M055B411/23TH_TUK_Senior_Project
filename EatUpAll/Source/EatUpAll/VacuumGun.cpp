@@ -192,7 +192,7 @@ FVector AVacuumGun::GetForceToAdd(FHitResult& HitResult, float DeltaTime)
 void AVacuumGun::TraceForAbsorb()
 {
 	FVector TraceCenter = GetTraceStartLocation();
-	UKismetSystemLibrary::SphereTraceMultiForObjects(this, TraceCenter, TraceCenter, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, AbsorbHitResultArray, true, FLinearColor::Red, FLinearColor::Green, 0.0f);
+	UKismetSystemLibrary::SphereTraceMultiForObjects(this, TraceCenter, TraceCenter, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::None, AbsorbHitResultArray, true, FLinearColor::Red, FLinearColor::Green, 0.0f);
 }
 
 void AVacuumGun::TraceForDamage()
