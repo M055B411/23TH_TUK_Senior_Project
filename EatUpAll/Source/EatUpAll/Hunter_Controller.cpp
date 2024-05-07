@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Hunter_Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Hunter_Controller.h"
 #include "EOS_GameInstance.h"
 #include "EatUpAllGameMode.h"
 
