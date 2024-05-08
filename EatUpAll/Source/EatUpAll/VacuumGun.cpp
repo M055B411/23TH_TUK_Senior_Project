@@ -103,7 +103,7 @@ void AVacuumGun::TraceForVacuum()
 {
 	FVector StartPoint = GetTraceStartLocation();
 	FVector EndPoint = GetTraceEndLocation();
-	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::ForDuration, VacuumHitResultArray, true, FLinearColor::Red, FLinearColor::Green, 0.0f);
+	UKismetSystemLibrary::SphereTraceMultiForObjects(this, StartPoint, EndPoint, VacuumTraceRadius, ObjectTypesForVacuumTrace, false, ActorsToIgnore, ShouldDrawDebugForTrace ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::None, VacuumHitResultArray, true, FLinearColor::Red, FLinearColor::Green, 0.0f);
 }
 
 void AVacuumGun::PullAndAbsorb(float DeltaTime)
