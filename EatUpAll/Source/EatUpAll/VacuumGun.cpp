@@ -165,7 +165,7 @@ void AVacuumGun::Multi_PullAndAbsorb_Implementation(float DeltaTime)
 				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
 				HitResult.GetComponent()->SetEnableGravity(false);
 
-				if (CanAbsorbThisActor(HitResult))
+				if (CanAbsorbThisActor(HitResult) && Cast<AVacuumable>(HitResult.GetActor())->GetAbsorbable())
 				{
 					Absorb(HitResult.GetActor());
 				}

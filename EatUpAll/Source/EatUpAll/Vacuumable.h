@@ -25,6 +25,8 @@ public:
 	void ShrinkDown_Implementation(AVacuumGun* VacuumGun);
 	void GetFired_Implementation();
 
+	bool GetAbsorbable() { return bisAbsorbable; }
+
 
 	UFUNCTION()
 		float GetWeight();
@@ -93,6 +95,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CoreItem")
 		bool bisPhaseItem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
+		bool bisAbsorbable;
 
 	FTimeline ShrinkDownTimeline;
 
