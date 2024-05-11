@@ -54,10 +54,16 @@ void AVacuumPlayer::BeginPlay()
 	if (IsLocallyControlled() && PlayerHUDClass)
 	{
 		AHunter_Controller* HC = GetController<AHunter_Controller>();
-		check(HC);
-		PlayerHUD = CreateWidget<UHunterWidget>(HC, PlayerHUDClass);
-		check(PlayerHUD);
-		PlayerHUD->AddToPlayerScreen();
+		//check(HC);
+		if (IsValid(HC)) 
+		{
+			PlayerHUD = CreateWidget<UHunterWidget>(HC, PlayerHUDClass);
+			//check(PlayerHUD);
+			if (IsValid(PlayerHUD)) 
+			{
+				PlayerHUD->AddToPlayerScreen();
+			}
+		}
 		// PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
 		// PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
 	}
@@ -66,7 +72,7 @@ void AVacuumPlayer::BeginPlay()
 void AVacuumPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (IsLocallyControlled() && PlayerHUDClass)
+	if (IsLocallyControlled() && PlayerHUDClass && PlayerHUD)
 	{
 		PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
 		PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
@@ -120,20 +126,27 @@ void AVacuumPlayer::EquipVacuumGun()
 {
 	UWorld* World = GetWorld();
 	if (!World || !VacuumGunClass) return;
-	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	
 	VacuumGun = World->SpawnActor<AVacuumGun>(VacuumGunClass);
 	VacuumGun->SetOwner(this);
 	VacuumGun->SetInstigator(this);
+	AdjustVacuumGun();
+	//VacuumGun->AttachToComponent(GetMesh1P(), AttachmentRules, FName(TEXT("UpperGrip")));
+	bHasRifle = true;
+}
+
+void AVacuumPlayer::AdjustVacuumGun()
+{
+	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
+	
 	if (this->IsLocallyControlled())
 	{
 		VacuumGun->AttachToComponent(GetMesh1P(), AttachmentRules, FName(TEXT("LowerGrip")));
 	}
-	else 
+	else
 	{
 		VacuumGun->AttachToComponent(GetMesh(), AttachmentRules, FName(TEXT("LowerGrip")));
 	}
-	//VacuumGun->AttachToComponent(GetMesh1P(), AttachmentRules, FName(TEXT("UpperGrip")));
-	bHasRifle = true;
 }
 
 void AVacuumPlayer::PerformVacuum()

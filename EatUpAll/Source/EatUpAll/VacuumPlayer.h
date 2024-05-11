@@ -50,6 +50,9 @@ private:
 		void EquipVacuumGun();
 
 	UFUNCTION(BlueprintCallable)
+		void AdjustVacuumGun();
+
+	UFUNCTION(BlueprintCallable)
 		void PerformVacuum();
 
 	UFUNCTION(BlueprintCallable)
