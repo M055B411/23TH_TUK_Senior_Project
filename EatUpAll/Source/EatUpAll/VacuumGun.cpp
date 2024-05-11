@@ -165,7 +165,7 @@ void AVacuumGun::Multi_PullAndAbsorb_Implementation(float DeltaTime)
 				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
 				HitResult.GetComponent()->SetEnableGravity(false);
 
-				if (CanAbsorbThisActor(HitResult) && Cast<AVacuumable>(HitResult.GetActor())->GetAbsorbable())
+				if (CanAbsorbThisActor(HitResult))
 				{
 					Absorb(HitResult.GetActor());
 				}
@@ -208,7 +208,7 @@ void AVacuumGun::Absorb(AActor* HitActor)
 	if (IsVacuuming && OwnerInterface)
 	{
 		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
-		if (HitVacuumable)
+		if (HitVacuumable && Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
 		{
 			LastFrameHitActors.Remove(HitActor);
 			CurrentFrameHitActors.Remove(HitActor);
