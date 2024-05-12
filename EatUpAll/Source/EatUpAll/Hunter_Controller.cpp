@@ -3,7 +3,6 @@
 #include "Hunter_Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "EOS_GameInstance.h"
 #include "EatUpAllGameMode.h"
 
 void AHunter_Controller::SetupInputComponent()
@@ -20,13 +19,3 @@ void AHunter_Controller::BeginPlay()
 		Subsystem->AddMappingContext(MappingContext, 0);
 	}
 }
-
-//void AHunter_Controller::OnNetCleanup(UNetConnection* Connection)
-//{
-//	UEOS_GameInstance* GameInstanceRef = Cast<UEOS_GameInstance>(GetWorld()->GetGameInstance());
-//	if (GameInstanceRef)
-//	{
-//		GameInstanceRef->DestroySession();
-//	}
-//	Super::OnNetCleanup(Connection);
-//}

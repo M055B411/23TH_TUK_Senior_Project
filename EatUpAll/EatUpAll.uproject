@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.2",
+	"EngineAssociation": "{6D79C97C-4E4D-656B-601A-969E09DCB3BA}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -21,22 +21,6 @@
 			"TargetAllowList": [
 				"Editor"
 			]
-		},
-		{
-			"Name": "OnlineSubsystemEOS",
-			"Enabled": true
-		},
-		{
-			"Name": "OnlineServicesEOS",
-			"Enabled": true
-		},
-		{
-			"Name": "OnlineServicesEOSGS",
-			"Enabled": true
-		},
-		{
-			"Name": "MultiplayerSessions",
-			"Enabled": false
 		}
 	]
 }
