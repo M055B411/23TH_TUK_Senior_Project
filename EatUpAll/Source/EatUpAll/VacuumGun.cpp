@@ -45,7 +45,7 @@ void AVacuumGun::AddToAmmo_Implementation(AVacuumable* Vacuumable)
 		if (Ammo > capacity) {
 			Ammo = capacity;
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), Ammo));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), Ammo));
 		PlayAbsorbSound();
 	}
 }
