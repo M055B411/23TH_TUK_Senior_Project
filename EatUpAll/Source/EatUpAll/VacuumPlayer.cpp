@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -22,6 +23,15 @@ AVacuumPlayer::AVacuumPlayer()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("RagDollBoom"));
+	CameraBoom->SetupAttachment(GetCapsuleComponent());
+	CameraBoom->TargetArmLength = 620.0f; // The camera follows at this distance behind the character	
+	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+
+	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
+	ThirdPersonCameraComponent->SetupAttachment(CameraBoom);
+	ThirdPersonCameraComponent->bUsePawnControlRotation = false;
 
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
@@ -138,7 +148,6 @@ void AVacuumPlayer::EquipVacuumGun()
 void AVacuumPlayer::AdjustVacuumGun()
 {
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	
 	if (this->IsLocallyControlled())
 	{
 		VacuumGun->AttachToComponent(GetMesh1P(), AttachmentRules, FName(TEXT("LowerGrip")));
