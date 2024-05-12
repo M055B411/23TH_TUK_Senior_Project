@@ -82,11 +82,11 @@ void AVacuumPlayer::BeginPlay()
 void AVacuumPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (IsLocallyControlled() && PlayerHUDClass && PlayerHUD)
+	/*if (IsLocallyControlled() && PlayerHUDClass && PlayerHUD)
 	{
 		PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
 		PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
-	}
+	}*/
 }
 
 // Called to bind functionality to input
