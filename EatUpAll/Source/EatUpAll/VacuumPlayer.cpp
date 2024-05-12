@@ -61,22 +61,22 @@ void AVacuumPlayer::BeginPlay()
 	}*/
 	EquipVacuumGun();
 	
-	if (IsLocallyControlled() && PlayerHUDClass)
-	{
-		AHunter_Controller* HC = GetController<AHunter_Controller>();
-		//check(HC);
-		if (IsValid(HC)) 
-		{
-			PlayerHUD = CreateWidget<UHunterWidget>(HC, PlayerHUDClass);
-			//check(PlayerHUD);
-			if (IsValid(PlayerHUD)) 
-			{
-				PlayerHUD->AddToPlayerScreen();
-			}
-		}
-		// PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
-		// PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
-	}
+	//if (IsLocallyControlled() && PlayerHUDClass)
+	//{
+	//	AHunter_Controller* HC = GetController<AHunter_Controller>();
+	//	//check(HC);
+	//	if (IsValid(HC)) 
+	//	{
+	//		PlayerHUD = CreateWidget<UHunterWidget>(HC, PlayerHUDClass);
+	//		//check(PlayerHUD);
+	//		if (IsValid(PlayerHUD)) 
+	//		{
+	//			PlayerHUD->AddToPlayerScreen();
+	//		}
+	//	}
+	//	// PlayerHUD->SetCharge(VacuumGun->GetCurCharge(), VacuumGun->GetMaxCharge());
+	//	// PlayerHUD->SetCapacity(VacuumGun->GetCurAmmo(), VacuumGun->GetAmmoCap());
+	//}
 }
 
 void AVacuumPlayer::Tick(float DeltaTime)
