@@ -37,7 +37,6 @@ public:
 		UHunterWidget* GetPlayerHUD() { return PlayerHUD; }
 private:
 
-
 	virtual void BeginPlay();
 
 	virtual void Tick(float DeltaTime) override;
@@ -119,5 +118,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 		float HP;
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* OverheadWidget;
 };

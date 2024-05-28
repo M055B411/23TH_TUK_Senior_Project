@@ -13,6 +13,7 @@
 #include "VacuumGun.h"
 #include "Hunter_Controller.h"
 #include "GameManager.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 AVacuumPlayer::AVacuumPlayer()
@@ -43,6 +44,9 @@ AVacuumPlayer::AVacuumPlayer()
 
 	PlayerHUDClass = nullptr;
 	PlayerHUD = nullptr;
+
+	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
+	OverheadWidget->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
