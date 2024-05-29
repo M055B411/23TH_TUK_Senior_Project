@@ -9,7 +9,8 @@
 
 void UMenu::MenuSetup(int32 NumberOfPublicConnections, FString TypeOfMatch, FString LobbyPath)
 {
-	PathToLobby = FString::Printf(TEXT("%s?listen"), *LobbyPath);
+	PathToLobby = FString::Printf(TEXT("%s"), *LobbyPath);
+	// PathToLobby = FString::Printf(TEXT("%s"), *LobbyPath);
 	NumPublicConnections = NumberOfPublicConnections;
 	MatchType = TypeOfMatch;
 	AddToViewport();

@@ -20,6 +20,7 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 {
 	if (!IsValidSessionInterface())
 	{
+		UE_LOG(LogTemp, Error, TEXT("Session interface is not valid"));
 		return;
 	}
 
@@ -31,6 +32,7 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 		LastMatchType = MatchType;
 
 		DestroySession();
+		return; // Ensure we return here to wait for session destruction
 	}
 
 	// Store the delegate in a FDelegateHandle so we can later remove it from the delegate list
@@ -48,12 +50,18 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FS
 	LastSessionSettings->bUseLobbiesIfAvailable = true;
 
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+	
 	if (!SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *LastSessionSettings))
 	{
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
 
 		// Broadcast our own custom delegate
 		MultiplayerOnCreateSessionComplete.Broadcast(false);
+		UE_LOG(LogTemp, Error, TEXT("Failed to create session"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Session creation started successfully"));
 	}
 }
 
@@ -135,6 +143,15 @@ bool UMultiplayerSessionsSubsystem::IsValidSessionInterface()
 
 void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
+	if (bWasSuccessful)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Session %s created successfully"), *SessionName.ToString());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to create session %s"), *SessionName.ToString());
+	}
+
 	if (SessionInterface)
 	{
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
