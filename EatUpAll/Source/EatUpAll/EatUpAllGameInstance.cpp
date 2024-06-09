@@ -44,6 +44,11 @@ void UEatUpAllGameInstance::Init()
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Found no subsystem"));
 	}
+
+	if (GEngine != nullptr)
+	{
+		GEngine->OnNetworkFailure().AddUObject(this, &UEatUpAllGameInstance::OnNetworkFailure);
+	}
 }
 
 void UEatUpAllGameInstance::LoadMenuWidget()
@@ -94,6 +99,11 @@ void UEatUpAllGameInstance::OnDestroySessionComplete(FName SessionName, bool Suc
 	}
 }
 
+void UEatUpAllGameInstance::OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString)
+{
+	LoadMainMenu();
+}
+
 void UEatUpAllGameInstance::CreateSession()
 {
 	if (SessionInterface.IsValid()) {
@@ -106,7 +116,7 @@ void UEatUpAllGameInstance::CreateSession()
 		{
 			SessionSettings.bIsLANMatch = false;
 		}
-		SessionSettings.NumPublicConnections = 2;
+		SessionSettings.NumPublicConnections = 5;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 		SessionSettings.bUseLobbiesIfAvailable = true;
@@ -218,6 +228,15 @@ void UEatUpAllGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSess
 
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
 }
+
+void UEatUpAllGameInstance::StartSession()
+{
+	if (SessionInterface.IsValid())
+	{
+		SessionInterface->StartSession(SESSION_NAME);
+	}
+}
+
 
 void UEatUpAllGameInstance::LoadMainMenu()
 {
