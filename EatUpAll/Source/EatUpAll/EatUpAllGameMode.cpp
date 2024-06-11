@@ -12,7 +12,7 @@ void AEatUpAllGameMode::PostLogin(APlayerController* NewPlayer)
 
 	if (GameState)
 	{
-		if (NumberOfPlayers >= 2)
+		if (NumberOfPlayers >= 3)
 		{
 			int32 PlayerArrayNumberOfPlayers = GameState.Get()->PlayerArray.Num();
 			UE_LOG(LogTemp, Log, TEXT("NumberOfPlayers is %d"), NumberOfPlayers);
@@ -46,7 +46,7 @@ void AEatUpAllGameMode::StartGame()
 		bUseSeamlessTravel = true;
 
 		// 서버 트래블 호출
-		bool bSuccess = World->ServerTravel(FString("/Game/Maps/TEST?listen"));
+		bool bSuccess = World->ServerTravel(FString("/Game/Maps/MainLevel?listen"));
 
 		// 로그를 통해 서버 트래블 성공 여부 확인
 		if (bSuccess)
