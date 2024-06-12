@@ -118,7 +118,7 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 			CurrentFrameHitActors.AddUnique(HitResult.GetActor());
 
 
-			if (CanPlayerSeeThisObject(HitResult))
+			if (CanPlayerSeeThisObject(HitResult)&&Cast<AVacuumable>(HitResult.GetActor())->GetAbsorbable())
 			{
 				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
 				HitResult.GetComponent()->SetEnableGravity(false);
@@ -185,7 +185,7 @@ FVector AVacuumGun::GetForceToAdd(FHitResult& HitResult, float DeltaTime)
 {
 	FVector NormalizedToMuzzle = (WeaponMesh->GetSocketLocation(FName("Muzzle")) - HitResult.GetActor()->GetActorLocation()).GetSafeNormal();
 	float distance = (WeaponMesh->GetSocketLocation(FName("Muzzle")) - HitResult.GetActor()->GetActorLocation()).Size() / 20.f;
-	FVector VacuumForceVector = (NormalizedToMuzzle * VacuumForce) * DeltaTime / (Cast<AVacuumable>(HitResult.GetActor())->GetWeight()*distance);
+	FVector VacuumForceVector = (NormalizedToMuzzle * VacuumForce) * DeltaTime * 1.2f / (Cast<AVacuumable>(HitResult.GetActor())->GetWeight()*distance);
 	return VacuumForceVector;
 }
 
