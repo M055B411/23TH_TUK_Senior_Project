@@ -63,7 +63,7 @@ void AVacuumPlayer::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}*/
-	EquipVacuumGun();
+	//EquipVacuumGun();
 	
 	//if (IsLocallyControlled() && PlayerHUDClass)
 	//{
@@ -164,24 +164,36 @@ void AVacuumPlayer::AdjustVacuumGun()
 
 void AVacuumPlayer::PerformVacuum()
 {
+	if (VacuumGun != nullptr) 
+	{
 		VacuumGun->EnableVacuuming(true);
+	}
+		
 }
 
 void AVacuumPlayer::StopVacuum()
 {
-	VacuumGun->EnableVacuuming(false);
-	VacuumGun->CancelVacuumEffect();
+	if (VacuumGun != nullptr)
+	{
+		VacuumGun->EnableVacuuming(false);
+		VacuumGun->CancelVacuumEffect();
+	}
+	
 }
 
 void AVacuumPlayer::FireVacuumGun()
 {
 	PlayFireMontage();
-	VacuumGun->FireAmmo();
+	if (VacuumGun != nullptr)
+	{
+		VacuumGun->FireAmmo();
+	}
+	
 }
 
 void AVacuumPlayer::PlayFireMontage()
 {
-	if (VacuumGun->CanFire())
+	if (VacuumGun != nullptr && VacuumGun->CanFire())
 	{
 		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
 		if (AnimInstance && FireMontage)
