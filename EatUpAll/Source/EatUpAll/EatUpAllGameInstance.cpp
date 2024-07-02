@@ -16,12 +16,12 @@ const static FName SERVER_NAME_SETTINGS_KEY = TEXT("ServerName");
 
 UEatUpAllGameInstance::UEatUpAllGameInstance(const FObjectInitializer& ObjectInitializer)
 {
-	ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
+	ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/EatUpAll/HUD/MenuSystem/WBP_MainMenu"));
 	if (!ensure(MenuBPClass.Class != nullptr)) return;
 
 	MenuClass = MenuBPClass.Class;
 
-	ConstructorHelpers::FClassFinder<UUserWidget> InGameMenuBPClass(TEXT("/Game/MenuSystem/WBP_InGameMenu"));
+	ConstructorHelpers::FClassFinder<UUserWidget> InGameMenuBPClass(TEXT("/Game/EatUpAll/HUD/MenuSystem/WBP_InGameMenu"));
 	if (!ensure(InGameMenuBPClass.Class != nullptr)) return;
 
 	InGameMenuClass = InGameMenuBPClass.Class;
@@ -243,5 +243,5 @@ void UEatUpAllGameInstance::LoadMainMenu()
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
 
-	PlayerController->ClientTravel("/Game/MenuSystem/MainMenu", ETravelType::TRAVEL_Absolute);
+	PlayerController->ClientTravel("/Game/EatUpAll/HUD/MenuSystem/MainMenu", ETravelType::TRAVEL_Absolute);
 }
