@@ -18,7 +18,7 @@ void AEatUpAllGameMode::PostLogin(APlayerController* NewPlayer)
 			UE_LOG(LogTemp, Log, TEXT("NumberOfPlayers is %d"), NumberOfPlayers);
 			UE_LOG(LogTemp, Log, TEXT("PlayerArrayNumberOfPlayers is %d"), PlayerArrayNumberOfPlayers);
 
-			GetWorldTimerManager().SetTimer(GameStartTimer, this, &AEatUpAllGameMode::StartGame, 10);
+			// GetWorldTimerManager().SetTimer(GameStartTimer, this, &AEatUpAllGameMode::StartGame, 10);
 		}
 	}
 }

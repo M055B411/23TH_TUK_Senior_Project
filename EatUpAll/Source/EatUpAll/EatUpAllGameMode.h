@@ -17,9 +17,10 @@ public:
 
 	void Logout(AController* Exiting) override;
 
-private:
-
+	UFUNCTION(BlueprintCallable)
 	void StartGame();
+
+private:
 
 	uint32 NumberOfPlayers = 0;
 	
