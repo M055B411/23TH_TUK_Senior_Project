@@ -84,7 +84,6 @@ void AVacuumGun::Vacuum(float DeltaTime)
 		TraceForDamage();
 
 		//Pull & SetProperties of caught actors
-		// Server_PullAndAbsorb(DeltaTime);
 		PullAndAbsorb(DeltaTime);
 		DamageTarget(DeltaTime);
 
@@ -142,37 +141,37 @@ void AVacuumGun::DamageTarget(float DeltaTime)
 	}
 }
 
-void AVacuumGun::Server_PullAndAbsorb_Implementation(float DeltaTime)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Server_PullAndAbsorb_Implementation Has Been Called"));
-
-	Multi_PullAndAbsorb(DeltaTime);
-}
-
-void AVacuumGun::Multi_PullAndAbsorb_Implementation(float DeltaTime)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Multi_PullAndAbsorb_Implementation Has Been Called"));
-
-	for (FHitResult HitResult : VacuumHitResultArray)
-	{
-		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitResult.GetActor());
-		if (HitVacuumable)
-		{
-			CurrentFrameHitActors.AddUnique(HitResult.GetActor());
-
-			if (CanPlayerSeeThisObject(HitResult))
-			{
-				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
-				HitResult.GetComponent()->SetEnableGravity(false);
-
-				if (CanAbsorbThisActor(HitResult))
-				{
-					Absorb(HitResult.GetActor());
-				}
-			}
-		}
-	}
-}
+//void AVacuumGun::Server_PullAndAbsorb_Implementation(float DeltaTime)
+//{
+//	UE_LOG(LogTemp, Warning, TEXT("Server_PullAndAbsorb_Implementation Has Been Called"));
+//
+//	Multi_PullAndAbsorb(DeltaTime);
+//}
+//
+//void AVacuumGun::Multi_PullAndAbsorb_Implementation(float DeltaTime)
+//{
+//	UE_LOG(LogTemp, Warning, TEXT("Multi_PullAndAbsorb_Implementation Has Been Called"));
+//
+//	for (FHitResult HitResult : VacuumHitResultArray)
+//	{
+//		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitResult.GetActor());
+//		if (HitVacuumable)
+//		{
+//			CurrentFrameHitActors.AddUnique(HitResult.GetActor());
+//
+//			if (CanPlayerSeeThisObject(HitResult))
+//			{
+//				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
+//				HitResult.GetComponent()->SetEnableGravity(false);
+//
+//				if (CanAbsorbThisActor(HitResult))
+//				{
+//					Absorb(HitResult.GetActor());
+//				}
+//			}
+//		}
+//	}
+//}
 
 bool AVacuumGun::CanPlayerSeeThisObject(FHitResult& HitResult)
 {
