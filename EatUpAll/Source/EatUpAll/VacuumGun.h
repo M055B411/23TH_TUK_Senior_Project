@@ -64,13 +64,13 @@ protected:
 
 	void DamageTarget(float DeltaTime);
 
-	UFUNCTION(Server, Reliable)
-	void Server_PullAndAbsorb(float DeltaTime);
-	void Server_PullAndAbsorb_Implementation(float DeltaTime);
+	//UFUNCTION(Server, Reliable)
+	//void Server_PullAndAbsorb(float DeltaTime);
+	//void Server_PullAndAbsorb_Implementation(float DeltaTime);
 
-	UFUNCTION(NetMulticast, Reliable)
-	void Multi_PullAndAbsorb(float DeltaTime);
-	void Multi_PullAndAbsorb_Implementation(float DeltaTime);
+	//UFUNCTION(NetMulticast, Reliable)
+	//void Multi_PullAndAbsorb(float DeltaTime);
+	//void Multi_PullAndAbsorb_Implementation(float DeltaTime);
 
 	bool CanPlayerSeeThisObject(FHitResult& HitResult);
 
