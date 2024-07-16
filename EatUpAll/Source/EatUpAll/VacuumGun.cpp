@@ -107,7 +107,7 @@ void AVacuumGun::TraceForVacuum()
 
 void AVacuumGun::PullAndAbsorb(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("PullAndAbsorb Has Been Called"));
+	// UE_LOG(LogTemp, Warning, TEXT("PullAndAbsorb Has Been Called"));
 
 	for (FHitResult HitResult : VacuumHitResultArray)
 	{
@@ -133,7 +133,7 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 
 void AVacuumGun::DamageTarget(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
+	// UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
 
 	for (FHitResult HitResult : DamageHitResultArray)
 	{

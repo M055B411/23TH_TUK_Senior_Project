@@ -20,9 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartGame();
 
-private:
-
 	uint32 NumberOfPlayers = 0;
+
+private:
 	
 	FTimerHandle GameStartTimer;
 };
