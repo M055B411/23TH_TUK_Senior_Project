@@ -20,7 +20,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StartGame();
 
-	uint32 NumberOfPlayers = 0;
+	UPROPERTY(BlueprintReadOnly)
+	int NumberOfPlayers = 0;
 
 private:
 	
