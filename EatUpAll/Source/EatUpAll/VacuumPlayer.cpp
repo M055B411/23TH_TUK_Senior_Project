@@ -20,15 +20,18 @@ AVacuumPlayer::AVacuumPlayer()
 {
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
-	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("RagDollBoom"));
 	CameraBoom->SetupAttachment(GetCapsuleComponent());
 	CameraBoom->TargetArmLength = 620.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("FPSBoom"));
+	SpringArm->SetupAttachment(GetCapsuleComponent());
+
+	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	FirstPersonCameraComponent->SetupAttachment(SpringArm);
+	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f));
+	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
 	ThirdPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
 	ThirdPersonCameraComponent->SetupAttachment(CameraBoom);
