@@ -42,13 +42,13 @@ void AEatUpAllGameMode::StartGame()
 
 	if (World)
 	{
-		// Seamless travelÀ» »ç¿ëÇÒÁö ¿©ºÎ ¼³Á¤
+		// Seamless travelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		bUseSeamlessTravel = true;
 
-		// ¼­¹ö Æ®·¡ºí È£Ãâ
+		// ï¿½ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½
 		bool bSuccess = World->ServerTravel(FString("/Game/Maps/MainLevel_temp?listen"));
 
-		// ·Î±×¸¦ ÅëÇØ ¼­¹ö Æ®·¡ºí ¼º°ø ¿©ºÎ È®ÀÎ
+		// ï¿½Î±×¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
 		if (bSuccess)
 		{
 			UE_LOG(LogTemp, Log, TEXT("ServerTravel to MainLevel successful"));

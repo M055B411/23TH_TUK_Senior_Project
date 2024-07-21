@@ -33,7 +33,7 @@ void AVacuumGun::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	Vacuum(DeltaTime);
-	Cooldown();
+	//Cooldown();
 }
 
 void AVacuumGun::AddToAmmo_Implementation(AVacuumable* Vacuumable)
@@ -87,7 +87,7 @@ void AVacuumGun::Vacuum(float DeltaTime)
 		PullAndAbsorb(DeltaTime);
 		DamageTarget(DeltaTime);
 
-		CurChargetime += GetWorld()->GetDeltaSeconds();
+		//CurChargetime += GetWorld()->GetDeltaSeconds();
 	}
 	// if trace miss, set properties of the last frame hit actors
 	CancelVacuumEffect();
@@ -95,7 +95,7 @@ void AVacuumGun::Vacuum(float DeltaTime)
 	LastFrameHitActors = CurrentFrameHitActors;
 	CurrentFrameHitActors.Empty();
 
-	CheckOverloaded();
+	//CheckOverloaded();
 }
 
 void AVacuumGun::TraceForVacuum()
