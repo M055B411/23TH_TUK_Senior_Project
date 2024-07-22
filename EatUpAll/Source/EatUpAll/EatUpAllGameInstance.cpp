@@ -147,7 +147,7 @@ void UEatUpAllGameInstance::OnCreateSessionComplete(FName SessionName, bool Succ
 	UWorld* World = GetWorld();
 	if (!ensure(World != nullptr)) return;
 
-	World->ServerTravel("/Game/Maps/MainLevel_temp?listen");
+	World->ServerTravel("/Game/Maps/MainLevel?listen");
 }
 
 void UEatUpAllGameInstance::RefreshServerList()
