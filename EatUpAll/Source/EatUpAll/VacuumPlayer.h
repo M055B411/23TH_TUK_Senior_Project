@@ -26,6 +26,7 @@ class EATUPALL_API AVacuumPlayer : public ACharacter, public IVacuumInterface
 
 public:
 
+	UFUNCTION(BlueprintCallable)
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/*VacuumInterface*/
 	UCameraComponent* GetPlayerCamera_Implementation();
@@ -61,8 +62,8 @@ private:
 	UFUNCTION(BlueprintCallable)
 		void StopVacuum();
 
-	UFUNCTION(BlueprintCallable)
-		void FireVacuumGun();
+	/*UFUNCTION(BlueprintCallable)
+		void FireVacuumGun();*/
 
 	UFUNCTION(BlueprintCallable)
 		void PlayFireMontage();

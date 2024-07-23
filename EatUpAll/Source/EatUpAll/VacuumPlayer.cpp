@@ -107,7 +107,7 @@ void AVacuumPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInput
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AVacuumPlayer::Look);
 		//EnhancedInputComponent->BindAction(PerformVacuumAction, ETriggerEvent::Triggered, this, &AVacuumPlayer::PerformVacuum);
 		EnhancedInputComponent->BindAction(StopPerformAction, ETriggerEvent::Triggered, this, &AVacuumPlayer::StopVacuum);
-		EnhancedInputComponent->BindAction(PerformFireAction, ETriggerEvent::Triggered, this, &AVacuumPlayer::FireVacuumGun);
+		//EnhancedInputComponent->BindAction(PerformFireAction, ETriggerEvent::Triggered, this, &AVacuumPlayer::FireVacuumGun);
 	}
 }
 
@@ -184,15 +184,15 @@ void AVacuumPlayer::StopVacuum()
 	
 }
 
-void AVacuumPlayer::FireVacuumGun()
-{
-	PlayFireMontage();
-	if (VacuumGun != nullptr)
-	{
-		VacuumGun->FireAmmo();
-	}
-	
-}
+//void AVacuumPlayer::FireVacuumGun()
+//{
+//	PlayFireMontage();
+//	if (VacuumGun != nullptr)
+//	{
+//		VacuumGun->FireAmmo();
+//	}
+//	
+//}
 
 void AVacuumPlayer::PlayFireMontage()
 {

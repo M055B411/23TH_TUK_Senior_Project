@@ -256,30 +256,30 @@ void AVacuumGun::CancelVacuumEffect()
 	}
 }
 
-void AVacuumGun::FireAmmo()
-{
-	if (CanFire() && GetWorld())
-	{
-		
-		
-		if (ProjectileClass != nullptr) {
-			FVector LuanchDirection = (GetTraceEndLocation() - GetTraceStartLocation()).GetSafeNormal();
-
-			
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-			const FRotator SpawnRotation = GetOwner()->GetActorRotation();
-
-			AVacuumProjectile* SpawnedProjectile = GetWorld()->SpawnActor<AVacuumProjectile>(ProjectileClass, GetTraceStartLocation(), SpawnRotation, ActorSpawnParams);
-
-			PlayFireSound();
-
-			IsVacuuming = false;
-			Ammo = 0.f;
-		}
-		
-	}
-}
+//void AVacuumGun::FireAmmo()
+//{
+//	if (CanFire() && GetWorld())
+//	{
+//		
+//		
+//		if (ProjectileClass != nullptr) {
+//			FVector LuanchDirection = (GetTraceEndLocation() - GetTraceStartLocation()).GetSafeNormal();
+//
+//			
+//			FActorSpawnParameters ActorSpawnParams;
+//			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+//			const FRotator SpawnRotation = GetOwner()->GetActorRotation();
+//
+//			AVacuumProjectile* SpawnedProjectile = GetWorld()->SpawnActor<AVacuumProjectile>(ProjectileClass, GetTraceStartLocation(), SpawnRotation, ActorSpawnParams);
+//
+//			PlayFireSound();
+//
+//			IsVacuuming = false;
+//			Ammo = 0.f;
+//		}
+//		
+//	}
+//}
 
 FVector AVacuumGun::GetTraceStartLocation()
 {
@@ -310,15 +310,15 @@ FVector AVacuumGun::GetTraceEndLocation()
 }
 
 
-void AVacuumGun::PlayFireSound()
-{
-	if (FireSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-}
-
-
+//void AVacuumGun::PlayFireSound()
+//{
+//	if (FireSound)
+//	{
+//		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+//	}
+//}
+//
+//
 void AVacuumGun::PlayAbsorbSound()
 {
 	if (PopSound)
@@ -326,51 +326,51 @@ void AVacuumGun::PlayAbsorbSound()
 		UGameplayStatics::PlaySoundAtLocation(this, PopSound, GetActorLocation());
 	}
 }
+//
+//void AVacuumGun::PlayVacuumstSound()
+//{
+//	if (Vacuumsoundstart)
+//	{
+//		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundstart, GetActorLocation());
+//	}
+//}
+//
+//void AVacuumGun::PlayVacuumonSound()
+//{
+//	if (Vacuumsoundongoing)
+//	{
+//		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundongoing, GetActorLocation());
+//	}
+//}
+//
+//void AVacuumGun::PlayVacuumendSound()
+//{
+//	if (Vacuumsoundend)
+//	{
+//		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundend, GetActorLocation());
+//	}
+//}
 
-void AVacuumGun::PlayVacuumstSound()
-{
-	if (Vacuumsoundstart)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundstart, GetActorLocation());
-	}
-}
-
-void AVacuumGun::PlayVacuumonSound()
-{
-	if (Vacuumsoundongoing)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundongoing, GetActorLocation());
-	}
-}
-
-void AVacuumGun::PlayVacuumendSound()
-{
-	if (Vacuumsoundend)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundend, GetActorLocation());
-	}
-}
-
-void AVacuumGun::CheckOverloaded()
-{
-	if (CurChargetime >= MaxChargeTime)
-	{
-		CurChargetime = MaxChargeTime;
-		bIsOverloaded = true;
-	}
-}
-
-void AVacuumGun::Cooldown()
-{
-	if(!IsVacuuming)
-	{
-		CurChargetime -= GetWorld()->GetDeltaSeconds();
-		if (CurChargetime < 0) {
-			CurChargetime = 0;
-			bIsOverloaded = false;
-		}
-	}
-}
+//void AVacuumGun::CheckOverloaded()
+//{
+//	if (CurChargetime >= MaxChargeTime)
+//	{
+//		CurChargetime = MaxChargeTime;
+//		bIsOverloaded = true;
+//	}
+//}
+//
+//void AVacuumGun::Cooldown()
+//{
+//	if(!IsVacuuming)
+//	{
+//		CurChargetime -= GetWorld()->GetDeltaSeconds();
+//		if (CurChargetime < 0) {
+//			CurChargetime = 0;
+//			bIsOverloaded = false;
+//		}
+//	}
+//}
 
 FVector AVacuumGun::GetMuzzleLocation()
 {

@@ -25,7 +25,7 @@ public:
 
 	void CancelVacuumEffect();
 
-	void FireAmmo();
+	//void FireAmmo();
 
 	bool CanFire();
 
@@ -85,9 +85,9 @@ protected:
 
 	bool CanAbsorbThisActor(FHitResult HitResult);
 
-	void PlayFireSound();
-
 	void PlayAbsorbSound();
+
+	/*void PlayFireSound();
 
 	void PlayVacuumstSound();
 
@@ -97,7 +97,7 @@ protected:
 
 	void CheckOverloaded();
 
-	void Cooldown();
+	void Cooldown();*/
 
 	FVector GetTraceStartLocation();
 
@@ -172,7 +172,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
 	USoundBase* Vacuumsoundend;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
 	float Ammo = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
