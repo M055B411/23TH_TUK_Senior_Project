@@ -12,14 +12,18 @@ void AEatUpAllGameMode::PostLogin(APlayerController* NewPlayer)
 
 	if (GameState)
 	{
-		if (NumberOfPlayers >= 2)
-		{
-			int32 PlayerArrayNumberOfPlayers = GameState.Get()->PlayerArray.Num();
-			UE_LOG(LogTemp, Log, TEXT("NumberOfPlayers is %d"), NumberOfPlayers);
-			UE_LOG(LogTemp, Log, TEXT("PlayerArrayNumberOfPlayers is %d"), PlayerArrayNumberOfPlayers);
+		int32 PlayerArrayNumberOfPlayers = GameState.Get()->PlayerArray.Num();
+		UE_LOG(LogTemp, Log, TEXT("NumberOfPlayers is %d"), NumberOfPlayers);
+		UE_LOG(LogTemp, Log, TEXT("PlayerArrayNumberOfPlayers is %d"), PlayerArrayNumberOfPlayers);
 
-			// GetWorldTimerManager().SetTimer(GameStartTimer, this, &AEatUpAllGameMode::StartGame, 10);
-		}
+		//if (NumberOfPlayers >= 3)
+		//{
+		//	int32 PlayerArrayNumberOfPlayers = GameState.Get()->PlayerArray.Num();
+		//	UE_LOG(LogTemp, Log, TEXT("NumberOfPlayers is %d"), NumberOfPlayers);
+		//	UE_LOG(LogTemp, Log, TEXT("PlayerArrayNumberOfPlayers is %d"), PlayerArrayNumberOfPlayers);
+
+		//	// GetWorldTimerManager().SetTimer(GameStartTimer, this, &AEatUpAllGameMode::StartGame, 10);
+		//}
 	}
 }
 

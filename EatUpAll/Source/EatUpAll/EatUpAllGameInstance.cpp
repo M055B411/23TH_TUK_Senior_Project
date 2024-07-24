@@ -119,7 +119,7 @@ void UEatUpAllGameInstance::CreateSession()
 		SessionSettings.NumPublicConnections = 3;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
-		SessionSettings.bUseLobbiesIfAvailable = true;
+		// SessionSettings.bUseLobbiesIfAvailable = true;
 		SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
@@ -157,7 +157,7 @@ void UEatUpAllGameInstance::RefreshServerList()
 	{
 		SessionSearch->MaxSearchResults = 100;
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
-		//SessionSearch->bIsLanQuery = true;
+		SessionSearch->bIsLanQuery = false;
 		UE_LOG(LogTemp, Warning, TEXT("Starting Find Session"));
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
@@ -192,6 +192,10 @@ void UEatUpAllGameInstance::OnFindSessionsComplete(bool Success)
 
 		MenuView->SetServerList(ServerNames);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No sessions found or error in finding sessions"));
+	}
 }
 
 
@@ -205,6 +209,7 @@ void UEatUpAllGameInstance::Join(uint32 Index)
 		MenuView->Teardown();
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("Attempting to join session at index: %d"), Index);
 	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
 }
 
@@ -217,6 +222,8 @@ void UEatUpAllGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSess
 		UE_LOG(LogTemp, Warning, TEXT("Could not get connect string."));
 		return;
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Joining session at address: %s"), *Address);
 
 	UEngine* Engine = GetEngine();
 	if (!ensure(Engine != nullptr)) return;
@@ -236,7 +243,6 @@ void UEatUpAllGameInstance::StartSession()
 		SessionInterface->StartSession(SESSION_NAME);
 	}
 }
-
 
 void UEatUpAllGameInstance::LoadMainMenu()
 {
