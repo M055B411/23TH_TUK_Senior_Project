@@ -108,18 +108,20 @@ void UEatUpAllGameInstance::CreateSession()
 {
 	if (SessionInterface.IsValid()) {
 		FOnlineSessionSettings SessionSettings;
-		if (IOnlineSubsystem::Get()->GetSubsystemName() == "NULL")
+		IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+
+		if (Subsystem->GetSubsystemName() == "NULL")
 		{
 			SessionSettings.bIsLANMatch = true;
 		}
-		else
+		else if (Subsystem->GetSubsystemName() == "STEAM")
 		{
 			SessionSettings.bIsLANMatch = false;
 		}
 		SessionSettings.NumPublicConnections = 3;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
-		// SessionSettings.bUseLobbiesIfAvailable = true;
+		SessionSettings.bUseLobbiesIfAvailable = true;
 		SessionSettings.Set(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
 		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
@@ -155,9 +157,19 @@ void UEatUpAllGameInstance::RefreshServerList()
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	if (SessionSearch.IsValid())
 	{
+		IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+
 		SessionSearch->MaxSearchResults = 100;
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals);
-		SessionSearch->bIsLanQuery = false;
+
+		if (Subsystem->GetSubsystemName() == "NULL")
+		{
+			SessionSearch->bIsLanQuery = true;
+		}
+		else if (Subsystem->GetSubsystemName() == "STEAM")
+		{
+			SessionSearch->bIsLanQuery = false;
+		}
 		UE_LOG(LogTemp, Warning, TEXT("Starting Find Session"));
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
