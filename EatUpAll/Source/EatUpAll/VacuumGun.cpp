@@ -40,7 +40,7 @@ void AVacuumGun::AddToAmmo_Implementation(AVacuumable* Vacuumable)
 {
 	if (Vacuumable)
 	{
-		Ammo += Vacuumable->GetWeight();
+		Ammo++;
 		
 		if (Ammo > capacity) {
 			Ammo = capacity;
