@@ -52,12 +52,10 @@ void AVacuumGun::AddToAmmo_Implementation(AVacuumable* Vacuumable)
 
 void AVacuumGun::EnableVacuuming(bool ShouldVacuum)
 {
-	if (!CanFire()) 
+
+	if (IsVacuuming != ShouldVacuum)
 	{
-		if (IsVacuuming != ShouldVacuum)
-		{
 			IsVacuuming = ShouldVacuum;
-		}
 	}
 }
 
@@ -78,7 +76,7 @@ void AVacuumGun::GetOwnerInterface()
 
 void AVacuumGun::Vacuum(float DeltaTime)
 {
-	if (IsVacuuming && OwnerInterface && !CanFire() && !bIsOverloaded)
+	if (IsVacuuming && OwnerInterface && !bIsOverloaded)
 	{
 		TraceForVacuum();
 		TraceForDamage();
@@ -204,7 +202,7 @@ void AVacuumGun::TraceForDamage()
 
 void AVacuumGun::Absorb(AActor* HitActor)
 {
-	if (IsVacuuming && OwnerInterface)
+	if (!CanFire() && IsVacuuming && OwnerInterface)
 	{
 		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
 		if (HitVacuumable && Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
