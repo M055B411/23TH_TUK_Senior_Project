@@ -46,6 +46,16 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 		bool GetOverloaded() { return bIsOverloaded; }
 
+protected:
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaTime) override;
+
+	void SetOwnerWithDelay();
+
+	void GetOwnerInterface();
+
 	void Vacuum(float DeltaTime);
 
 	UFUNCTION(Server, Reliable, WithValidation)
@@ -57,30 +67,20 @@ public:
 	void Multi_Vacuum(float DeltaTime);
 	void Multi_Vacuum_Implementation(float DeltaTime);
 
-protected:
-
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaTime) override;
-
-	void SetOwnerWithDelay();
-
-	void GetOwnerInterface();
-
-
 	void TraceForVacuum();
 
 	void PullAndAbsorb(float DeltaTime);
 
 	void DamageTarget(float DeltaTime);
 
-	/*UFUNCTION(Server, Reliable, WithValidation)
+	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_DamageTarget(float DeltaTime);
 	void Server_DamageTarget_Implementation(float DeltaTime);
+	bool Server_DamageTarget_Validate(float DeltaTime); // Add the validation function declaration
 
 	UFUNCTION(NetMulticast, Reliable)
 	void Multi_DamageTarget(float DeltaTime);
-	void Multi_DamageTarget_Implementation(float DeltaTime);*/
+	void Multi_DamageTarget_Implementation(float DeltaTime);
 
 	bool CanPlayerSeeThisObject(FHitResult& HitResult);
 

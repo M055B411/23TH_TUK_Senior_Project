@@ -158,39 +158,45 @@ void AVacuumGun::DamageTarget(float DeltaTime)
 {
 	UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
 
-	//if (HasAuthority())
-	//{
-	//	// 서버에서 로직 실행
-	//	Multi_DamageTarget(DeltaTime);
-	//}
-	//else
-	//{
-	//	// 클라이언트에서 서버로 요청
-	//	Server_DamageTarget(DeltaTime);
-	//}
+	if (HasAuthority())
+	{
+		// 서버에서 로직 실행
+		Multi_DamageTarget(DeltaTime);
+	}
+	else
+	{
+		// 클라이언트에서 서버로 요청
+		Server_DamageTarget(DeltaTime);
+	}
+
+	/*for (FHitResult HitResult : DamageHitResultArray)
+	{
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.2f, nullptr, nullptr,  nullptr);
+	}*/
+}
+
+void AVacuumGun::Server_DamageTarget_Implementation(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Server_DamageTarget_Implementation Has Been Called"));
+	Multi_DamageTarget(DeltaTime);
+}
+
+bool AVacuumGun::Server_DamageTarget_Validate(float DeltaTime)
+{
+	// Add any validation logic here, return true if validation is successful
+	return true;
+}
+
+void AVacuumGun::Multi_DamageTarget_Implementation(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Multi_DamageTarget_Implementation Has Been Called"));
 
 	for (FHitResult HitResult : DamageHitResultArray)
 	{
-		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.2f, nullptr, nullptr,  nullptr);
+		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.2f, nullptr, nullptr, nullptr);
+		UE_LOG(LogTemp, Warning, TEXT("DamageTarget."));
 	}
 }
-
-//void AVacuumGun::Server_DamageTarget_Implementation(float DeltaTime)
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("Server_DamageTarget_Implementation Has Been Called"));
-//	Multi_DamageTarget(DeltaTime);
-//}
-//
-//void AVacuumGun::Multi_DamageTarget_Implementation(float DeltaTime)
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("Multi_DamageTarget_Implementation Has Been Called"));
-//
-//	for (FHitResult HitResult : DamageHitResultArray)
-//	{
-//		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.2f, nullptr, nullptr, nullptr);
-//		UE_LOG(LogTemp, Warning, TEXT("DamageTarget."));
-//	}
-//}
 
 bool AVacuumGun::CanPlayerSeeThisObject(FHitResult& HitResult)
 {
