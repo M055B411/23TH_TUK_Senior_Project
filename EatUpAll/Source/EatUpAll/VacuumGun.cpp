@@ -76,7 +76,34 @@ void AVacuumGun::GetOwnerInterface()
 
 void AVacuumGun::Vacuum(float DeltaTime)
 {
-	if (IsVacuuming && OwnerInterface && !bIsOverloaded)
+	if (HasAuthority())
+	{
+		// 서버에서 로직 실행
+		Multi_Vacuum(DeltaTime);
+	}
+	else
+	{
+		// 클라이언트에서 서버로 요청
+		Server_Vacuum(DeltaTime);
+	}
+}
+
+void AVacuumGun::Server_Vacuum_Implementation(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Server_Vacuum_Implementation Has Been Called"));
+	Multi_Vacuum(DeltaTime);
+}
+
+// Server Vacuum Validation
+bool AVacuumGun::Server_Vacuum_Validate(float DeltaTime)
+{
+	// Add any validation logic here, return true if validation is successful
+	return true;
+}
+
+void AVacuumGun::Multi_Vacuum_Implementation(float DeltaTime)
+{
+	if (IsVacuuming && OwnerInterface)
 	{
 		TraceForVacuum();
 		TraceForDamage();
@@ -92,8 +119,6 @@ void AVacuumGun::Vacuum(float DeltaTime)
 
 	LastFrameHitActors = CurrentFrameHitActors;
 	CurrentFrameHitActors.Empty();
-
-	//CheckOverloaded();
 }
 
 void AVacuumGun::TraceForVacuum()
@@ -131,44 +156,39 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 
 void AVacuumGun::DamageTarget(float DeltaTime)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
+	UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
+
+	//if (HasAuthority())
+	//{
+	//	// 서버에서 로직 실행
+	//	Multi_DamageTarget(DeltaTime);
+	//}
+	//else
+	//{
+	//	// 클라이언트에서 서버로 요청
+	//	Server_DamageTarget(DeltaTime);
+	//}
 
 	for (FHitResult HitResult : DamageHitResultArray)
 	{
 		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.2f, nullptr, nullptr,  nullptr);
-		UE_LOG(LogTemp, Warning, TEXT("DamageTarget."));
 	}
 }
 
-//void AVacuumGun::Server_PullAndAbsorb_Implementation(float DeltaTime)
+//void AVacuumGun::Server_DamageTarget_Implementation(float DeltaTime)
 //{
-//	UE_LOG(LogTemp, Warning, TEXT("Server_PullAndAbsorb_Implementation Has Been Called"));
-//
-//	Multi_PullAndAbsorb(DeltaTime);
+//	UE_LOG(LogTemp, Warning, TEXT("Server_DamageTarget_Implementation Has Been Called"));
+//	Multi_DamageTarget(DeltaTime);
 //}
 //
-//void AVacuumGun::Multi_PullAndAbsorb_Implementation(float DeltaTime)
+//void AVacuumGun::Multi_DamageTarget_Implementation(float DeltaTime)
 //{
-//	UE_LOG(LogTemp, Warning, TEXT("Multi_PullAndAbsorb_Implementation Has Been Called"));
+//	UE_LOG(LogTemp, Warning, TEXT("Multi_DamageTarget_Implementation Has Been Called"));
 //
-//	for (FHitResult HitResult : VacuumHitResultArray)
+//	for (FHitResult HitResult : DamageHitResultArray)
 //	{
-//		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitResult.GetActor());
-//		if (HitVacuumable)
-//		{
-//			CurrentFrameHitActors.AddUnique(HitResult.GetActor());
-//
-//			if (CanPlayerSeeThisObject(HitResult))
-//			{
-//				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
-//				HitResult.GetComponent()->SetEnableGravity(false);
-//
-//				if (CanAbsorbThisActor(HitResult))
-//				{
-//					Absorb(HitResult.GetActor());
-//				}
-//			}
-//		}
+//		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.2f, nullptr, nullptr, nullptr);
+//		UE_LOG(LogTemp, Warning, TEXT("DamageTarget."));
 //	}
 //}
 
