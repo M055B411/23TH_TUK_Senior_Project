@@ -5,6 +5,7 @@
 #include "VacuumGun.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+// #include "Net/UnrealNetwork.h"
 
 AVacuumable::AVacuumable()
 {
@@ -122,11 +123,44 @@ void AVacuumable::DisableOnHit()
 		DisableTimerStarted = true;
 		Mesh->SetNotifyRigidBodyCollision(false);
 		UE_LOG(LogTemp, Warning, TEXT("DisabledOnHit"));
+
+		if (HasAuthority())
+		{
+			Multi_DisableOnHit();
+		}
+		else
+		{
+			Server_DisableOnHit();
+		}
 	}
 }
+
+void AVacuumable::Server_DisableOnHit_Implementation()
+{
+	Multi_DisableOnHit();
+}
+
+bool AVacuumable::Server_DisableOnHit_Validate()
+{
+	return true; // 서버에서 실행되기 전에 유효성을 검사합니다.
+}
+
+void AVacuumable::Multi_DisableOnHit_Implementation()
+{
+	Mesh->SetNotifyRigidBodyCollision(false);
+	UE_LOG(LogTemp, Warning, TEXT("DisabledOnHit (Multi)"));
+}
+
 
 float AVacuumable::GetWeight()
 {
 	return Weight;
 }
 
+//void AVacuumable::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+//{
+//	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+//
+//	DOREPLIFETIME(AVacuumable, DisableTimerStarted);
+//	DOREPLIFETIME(AVacuumable, Mesh);
+//}

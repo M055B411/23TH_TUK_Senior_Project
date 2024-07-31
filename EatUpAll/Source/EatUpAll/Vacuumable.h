@@ -56,6 +56,17 @@ protected:
 	UFUNCTION()
 		void DisableOnHit();
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_DisableOnHit();
+	void Server_DisableOnHit_Implementation();
+	bool Server_DisableOnHit_Validate();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multi_DisableOnHit();
+	void Multi_DisableOnHit_Implementation();
+
+	// virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UStaticMeshComponent* Mesh;
