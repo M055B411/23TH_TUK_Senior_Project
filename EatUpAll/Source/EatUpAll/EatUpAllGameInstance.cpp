@@ -95,7 +95,11 @@ void UEatUpAllGameInstance::Host(FString ServerName)
 void UEatUpAllGameInstance::OnDestroySessionComplete(FName SessionName, bool Success)
 {
 	if (Success) {
+		UE_LOG(LogTemp, Warning, TEXT("Session destroyed successfully. Creating new session."));
 		CreateSession();
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Failed to destroy session."));
 	}
 }
 
@@ -118,7 +122,7 @@ void UEatUpAllGameInstance::CreateSession()
 		{
 			SessionSettings.bIsLANMatch = false;
 		}
-		SessionSettings.NumPublicConnections = 3;
+		SessionSettings.NumPublicConnections = 4;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 		SessionSettings.bUseLobbiesIfAvailable = true;
