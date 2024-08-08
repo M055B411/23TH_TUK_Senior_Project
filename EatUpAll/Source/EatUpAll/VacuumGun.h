@@ -93,21 +93,18 @@ protected:
 
 	void Absorb(AActor* HitActor);
 
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Absorb(AActor* HitActor);
+	void Server_Absorb_Implementation(AActor* HitActor);
+	bool Server_Absorb_Validate(AActor* HitActor);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Multi_Absorb(AActor* HitActor);
+	void Multi_Absorb_Implementation(AActor* HitActor);
+
 	bool CanAbsorbThisActor(FHitResult HitResult);
 
 	void PlayAbsorbSound();
-
-	/*void PlayFireSound();
-
-	void PlayVacuumstSound();
-
-	void PlayVacuumonSound();
-
-	void PlayVacuumendSound();
-
-	void CheckOverloaded();
-
-	void Cooldown();*/
 
 	FVector GetTraceStartLocation();
 
@@ -165,7 +162,7 @@ protected:
 	float VacuumForce = 200000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
-	float AbsorbWindow = 25.f;
+	float AbsorbWindow = 45.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
 	float AbsorbRange = 300.f;;

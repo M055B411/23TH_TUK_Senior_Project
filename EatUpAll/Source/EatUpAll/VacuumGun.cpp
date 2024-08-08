@@ -46,7 +46,7 @@ void AVacuumGun::AddToAmmo_Implementation(AVacuumable* Vacuumable)
 			Ammo = capacity;
 		}
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), Ammo));
-		PlayAbsorbSound();
+		// PlayAbsorbSound();
 	}
 }
 
@@ -130,7 +130,7 @@ void AVacuumGun::TraceForVacuum()
 
 void AVacuumGun::PullAndAbsorb(float DeltaTime)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("PullAndAbsorb Has Been Called"));
+	float ForceMultiplier = 1000.f; // 힘의 크기를 조절하는 스칼라 값
 
 	for (FHitResult HitResult : VacuumHitResultArray)
 	{
@@ -139,11 +139,11 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 		{
 			CurrentFrameHitActors.AddUnique(HitResult.GetActor());
 
-
 			if (CanPlayerSeeThisObject(HitResult)&&Cast<AVacuumable>(HitResult.GetActor())->GetAbsorbable())
 			{
+				FVector ForceToAdd = GetForceToAdd(HitResult, DeltaTime) * ForceMultiplier;
 				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
-				HitResult.GetComponent()->SetEnableGravity(false);
+				// HitResult.GetComponent()->SetEnableGravity(false);
 
 				if (CanAbsorbThisActor(HitResult))
 				{
@@ -156,8 +156,6 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 
 void AVacuumGun::DamageTarget(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
-
 	if (HasAuthority())
 	{
 		// 서버에서 로직 실행
@@ -229,6 +227,48 @@ void AVacuumGun::TraceForDamage()
 
 void AVacuumGun::Absorb(AActor* HitActor)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Absorb Has Been Called"));
+
+	if (HasAuthority())
+	{
+		// 서버에서 로직 실행
+		Multi_Absorb(HitActor);
+	}
+	else
+	{
+		// 클라이언트에서 서버로 요청
+		Server_Absorb(HitActor);
+	}
+
+	//if (!CanFire() && IsVacuuming && OwnerInterface)
+	//{
+	//	IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
+	//	if (HitVacuumable && Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
+	//	{
+	//		LastFrameHitActors.Remove(HitActor);
+	//		CurrentFrameHitActors.Remove(HitActor);
+	//		Execute_ShrinkDown(HitActor, this);
+	//	}
+	//}
+}
+
+
+void AVacuumGun::Server_Absorb_Implementation(AActor* HitActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Server_Absorb_Implementation Has Been Called"));
+	Multi_Absorb(HitActor);
+}
+
+bool AVacuumGun::Server_Absorb_Validate(AActor* HitActor)
+{
+	// Add any validation logic here, return true if validation is successful
+	return true;
+}
+
+void AVacuumGun::Multi_Absorb_Implementation(AActor* HitActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Multi_Absorb_Implementation Has Been Called"));
+
 	if (!CanFire() && IsVacuuming && OwnerInterface)
 	{
 		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
@@ -243,16 +283,24 @@ void AVacuumGun::Absorb(AActor* HitActor)
 
 bool AVacuumGun::CanAbsorbThisActor(FHitResult HitResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("CanAbsorbThisActor Has Been Called"));
+
+	// 1. 흡수 범위 내에 있는지 확인
 	if ((GetOwner()->GetActorLocation() - HitResult.ImpactPoint).Length() < AbsorbRange)
 	{
+		// 2. 타겟 위치와 카메라 위치를 기반으로 방향 벡터 계산
 		FVector TargetLocation = HitResult.ImpactPoint;
 		UCameraComponent* PlayerCamera = Execute_GetPlayerCamera(GetOwner());
 		FVector PlayerCameraLocation = PlayerCamera->GetComponentLocation();
 		FVector TargetDirection = (TargetLocation - PlayerCameraLocation).GetSafeNormal();
 		FVector CameraForward = PlayerCamera->GetForwardVector();
+		
+		// 3. 카메라의 정면 벡터와 타겟 방향 벡터 사이의 각도 계산
 		const double ChosTheta = FVector::DotProduct(CameraForward, TargetDirection);
 		double Theta = FMath::Acos(ChosTheta);
 		Theta = FMath::RadiansToDegrees(Theta);
+
+		// 4. 카메라의 정면 벡터와 타겟 방향 벡터 사이의 각도가 흡수 창 안에 있는지 확인
 		const FVector CrossProduct = FVector::CrossProduct(CameraForward, TargetDirection);
 		if (Theta < AbsorbWindow && Theta > -AbsorbWindow)
 		{
