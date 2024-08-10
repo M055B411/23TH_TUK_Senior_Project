@@ -56,16 +56,10 @@ protected:
 	UFUNCTION()
 		void DisableOnHit();
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_DisableOnHit();
-	void Server_DisableOnHit_Implementation();
-	bool Server_DisableOnHit_Validate();
-
+	// 타임라인 동기화를 위한 멀티캐스트 함수 선언
 	UFUNCTION(NetMulticast, Reliable)
-	void Multi_DisableOnHit();
-	void Multi_DisableOnHit_Implementation();
-
-	// virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	void Multi_PlayShrinkDownTimeline();
+	void Multi_PlayShrinkDownTimeline_Implementation();
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

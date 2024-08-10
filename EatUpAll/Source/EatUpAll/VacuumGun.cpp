@@ -76,33 +76,6 @@ void AVacuumGun::GetOwnerInterface()
 
 void AVacuumGun::Vacuum(float DeltaTime)
 {
-	if (HasAuthority())
-	{
-		// 서버에서 로직 실행
-		Multi_Vacuum(DeltaTime);
-	}
-	else
-	{
-		// 클라이언트에서 서버로 요청
-		Server_Vacuum(DeltaTime);
-	}
-}
-
-void AVacuumGun::Server_Vacuum_Implementation(float DeltaTime)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Server_Vacuum_Implementation Has Been Called"));
-	Multi_Vacuum(DeltaTime);
-}
-
-// Server Vacuum Validation
-bool AVacuumGun::Server_Vacuum_Validate(float DeltaTime)
-{
-	// Add any validation logic here, return true if validation is successful
-	return true;
-}
-
-void AVacuumGun::Multi_Vacuum_Implementation(float DeltaTime)
-{
 	if (IsVacuuming && OwnerInterface)
 	{
 		TraceForVacuum();
@@ -156,38 +129,7 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 
 void AVacuumGun::DamageTarget(float DeltaTime)
 {
-	if (HasAuthority())
-	{
-		// 서버에서 로직 실행
-		Multi_DamageTarget(DeltaTime);
-	}
-	else
-	{
-		// 클라이언트에서 서버로 요청
-		Server_DamageTarget(DeltaTime);
-	}
-
-	/*for (FHitResult HitResult : DamageHitResultArray)
-	{
-		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.2f, nullptr, nullptr,  nullptr);
-	}*/
-}
-
-void AVacuumGun::Server_DamageTarget_Implementation(float DeltaTime)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Server_DamageTarget_Implementation Has Been Called"));
-	Multi_DamageTarget(DeltaTime);
-}
-
-bool AVacuumGun::Server_DamageTarget_Validate(float DeltaTime)
-{
-	// Add any validation logic here, return true if validation is successful
-	return true;
-}
-
-void AVacuumGun::Multi_DamageTarget_Implementation(float DeltaTime)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Multi_DamageTarget_Implementation Has Been Called"));
+	UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
 
 	for (FHitResult HitResult : DamageHitResultArray)
 	{
@@ -228,46 +170,6 @@ void AVacuumGun::TraceForDamage()
 void AVacuumGun::Absorb(AActor* HitActor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Absorb Has Been Called"));
-
-	if (HasAuthority())
-	{
-		// 서버에서 로직 실행
-		Multi_Absorb(HitActor);
-	}
-	else
-	{
-		// 클라이언트에서 서버로 요청
-		Server_Absorb(HitActor);
-	}
-
-	//if (!CanFire() && IsVacuuming && OwnerInterface)
-	//{
-	//	IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
-	//	if (HitVacuumable && Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
-	//	{
-	//		LastFrameHitActors.Remove(HitActor);
-	//		CurrentFrameHitActors.Remove(HitActor);
-	//		Execute_ShrinkDown(HitActor, this);
-	//	}
-	//}
-}
-
-
-void AVacuumGun::Server_Absorb_Implementation(AActor* HitActor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Server_Absorb_Implementation Has Been Called"));
-	Multi_Absorb(HitActor);
-}
-
-bool AVacuumGun::Server_Absorb_Validate(AActor* HitActor)
-{
-	// Add any validation logic here, return true if validation is successful
-	return true;
-}
-
-void AVacuumGun::Multi_Absorb_Implementation(AActor* HitActor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Multi_Absorb_Implementation Has Been Called"));
 
 	if (!CanFire() && IsVacuuming && OwnerInterface)
 	{
@@ -382,16 +284,6 @@ FVector AVacuumGun::GetTraceEndLocation()
 	return FVector(0.f);
 }
 
-
-//void AVacuumGun::PlayFireSound()
-//{
-//	if (FireSound)
-//	{
-//		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-//	}
-//}
-//
-//
 void AVacuumGun::PlayAbsorbSound()
 {
 	if (PopSound)
@@ -399,51 +291,6 @@ void AVacuumGun::PlayAbsorbSound()
 		UGameplayStatics::PlaySoundAtLocation(this, PopSound, GetActorLocation());
 	}
 }
-//
-//void AVacuumGun::PlayVacuumstSound()
-//{
-//	if (Vacuumsoundstart)
-//	{
-//		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundstart, GetActorLocation());
-//	}
-//}
-//
-//void AVacuumGun::PlayVacuumonSound()
-//{
-//	if (Vacuumsoundongoing)
-//	{
-//		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundongoing, GetActorLocation());
-//	}
-//}
-//
-//void AVacuumGun::PlayVacuumendSound()
-//{
-//	if (Vacuumsoundend)
-//	{
-//		UGameplayStatics::PlaySoundAtLocation(this, Vacuumsoundend, GetActorLocation());
-//	}
-//}
-
-//void AVacuumGun::CheckOverloaded()
-//{
-//	if (CurChargetime >= MaxChargeTime)
-//	{
-//		CurChargetime = MaxChargeTime;
-//		bIsOverloaded = true;
-//	}
-//}
-//
-//void AVacuumGun::Cooldown()
-//{
-//	if(!IsVacuuming)
-//	{
-//		CurChargetime -= GetWorld()->GetDeltaSeconds();
-//		if (CurChargetime < 0) {
-//			CurChargetime = 0;
-//			bIsOverloaded = false;
-//		}
-//	}
-//}
 
 FVector AVacuumGun::GetMuzzleLocation()
 {

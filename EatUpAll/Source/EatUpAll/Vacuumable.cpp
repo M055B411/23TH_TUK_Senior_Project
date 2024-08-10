@@ -40,11 +40,24 @@ void AVacuumable::ShrinkDown_Implementation(AVacuumGun* VacuumGun)
 {
 	ShrinkStartLocation = GetActorLocation();
 	ShrinkStartScale = GetActorScale3D();
-	// 24.03.11 Contrasts on BP
 	Mesh->SetSimulatePhysics(false);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ShrinkDownTimeline.PlayFromStart();
 	TargetVacuumGun = VacuumGun;
+
+	// 서버에서만 타임라인을 시작하고, 클라이언트로 이를 동기화함
+	if (HasAuthority())
+	{
+		ShrinkDownTimeline.PlayFromStart();
+		Multi_PlayShrinkDownTimeline();
+	}
+
+	TargetVacuumGun = VacuumGun;
+}
+
+void AVacuumable::Multi_PlayShrinkDownTimeline_Implementation()
+{
+	ShrinkDownTimeline.PlayFromStart();
 }
 
 void AVacuumable::GetFired_Implementation()
@@ -84,6 +97,9 @@ void AVacuumable::ShrinkDownFinished()
 	{
 		VacuumGun->Execute_AddToAmmo(TargetVacuumGun, this);
 	}
+
+	// 오브젝트를 축소 과정이 끝나면 파괴
+	Destroy();
 }
 
 void AVacuumable::ExpandToNormalUpdate(float Alpha)
@@ -123,34 +139,8 @@ void AVacuumable::DisableOnHit()
 		DisableTimerStarted = true;
 		Mesh->SetNotifyRigidBodyCollision(false);
 		UE_LOG(LogTemp, Warning, TEXT("DisabledOnHit"));
-
-		if (HasAuthority())
-		{
-			Multi_DisableOnHit();
-		}
-		else
-		{
-			Server_DisableOnHit();
-		}
 	}
 }
-
-void AVacuumable::Server_DisableOnHit_Implementation()
-{
-	Multi_DisableOnHit();
-}
-
-bool AVacuumable::Server_DisableOnHit_Validate()
-{
-	return true; // 서버에서 실행되기 전에 유효성을 검사합니다.
-}
-
-void AVacuumable::Multi_DisableOnHit_Implementation()
-{
-	Mesh->SetNotifyRigidBodyCollision(false);
-	UE_LOG(LogTemp, Warning, TEXT("DisabledOnHit (Multi)"));
-}
-
 
 float AVacuumable::GetWeight()
 {

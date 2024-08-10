@@ -58,29 +58,11 @@ protected:
 
 	void Vacuum(float DeltaTime);
 
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_Vacuum(float DeltaTime);
-	void Server_Vacuum_Implementation(float DeltaTime);
-	bool Server_Vacuum_Validate(float DeltaTime); // Add the validation function declaration
-
-	UFUNCTION(NetMulticast, Reliable)
-	void Multi_Vacuum(float DeltaTime);
-	void Multi_Vacuum_Implementation(float DeltaTime);
-
 	void TraceForVacuum();
 
 	void PullAndAbsorb(float DeltaTime);
 
 	void DamageTarget(float DeltaTime);
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_DamageTarget(float DeltaTime);
-	void Server_DamageTarget_Implementation(float DeltaTime);
-	bool Server_DamageTarget_Validate(float DeltaTime); // Add the validation function declaration
-
-	UFUNCTION(NetMulticast, Reliable)
-	void Multi_DamageTarget(float DeltaTime);
-	void Multi_DamageTarget_Implementation(float DeltaTime);
 
 	bool CanPlayerSeeThisObject(FHitResult& HitResult);
 
@@ -92,15 +74,6 @@ protected:
 	void TraceForDamage();
 
 	void Absorb(AActor* HitActor);
-
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_Absorb(AActor* HitActor);
-	void Server_Absorb_Implementation(AActor* HitActor);
-	bool Server_Absorb_Validate(AActor* HitActor);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void Multi_Absorb(AActor* HitActor);
-	void Multi_Absorb_Implementation(AActor* HitActor);
 
 	bool CanAbsorbThisActor(FHitResult HitResult);
 
