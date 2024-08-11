@@ -20,9 +20,10 @@ public:
 	AVacuumable();
 
 	virtual void Tick(float DeltaTime) override;
-	/*VacuumInterface*/
+
+	//VacuumInterface
 	UPrimitiveComponent* GetVacuumableMesh_Implementation();
-	void ShrinkDown_Implementation(AVacuumGun* VacuumGun);
+	// void ShrinkDown_Implementation(AVacuumGun* VacuumGun);
 	void GetFired_Implementation();
 
 	bool GetAbsorbable() { return bisAbsorbable; }
@@ -41,26 +42,48 @@ protected:
 	UFUNCTION(BlueprintCallable)
 		void EnableVacuumability();
 
-	UFUNCTION()
-		void ShrinkDownUpdate(float Alpha);
+	/*UFUNCTION()
+		void ExpandToNormalUpdate(float Alpha);*/
 
-	UFUNCTION()
-		void ShrinkDownFinished();
-
-	UFUNCTION()
-		void ExpandToNormalUpdate(float Alpha);
-
-	UFUNCTION()
-		void SetTimelineFunctions();
+	/*UFUNCTION()
+		void SetTimelineFunctions();*/
 
 	UFUNCTION()
 		void DisableOnHit();
 
-	// 타임라인 동기화를 위한 멀티캐스트 함수 선언
-	UFUNCTION(NetMulticast, Reliable)
-	void Multi_PlayShrinkDownTimeline();
-	void Multi_PlayShrinkDownTimeline_Implementation();
+	//UFUNCTION()
+	//void ShrinkDownUpdate(float Alpha);
 
+	//UFUNCTION()
+	//void ShrinkDownFinished();
+
+	//UFUNCTION(Server, Reliable, WithValidation)
+	//void Server_ShrinkDownTimeline(AVacuumGun* VacuumGun);
+	//void Server_ShrinkDownTimeline_Implementation(AVacuumGun* VacuumGun);
+	//bool Server_ShrinkDownTimeline_Validate(AVacuumGun* VacuumGun);
+
+	//UFUNCTION(Server, Reliable, WithValidation)
+	//void Server_ShrinkDownUpdate(float Alpha);
+	//void Server_ShrinkDownUpdate_Implementation(float Alpha);
+	//bool Server_ShrinkDownUpdate_Validate(float Alpha);
+
+	//UFUNCTION(Server, Reliable, WithValidation)
+	//void Server_ShrinkDownFinished();
+	//void Server_ShrinkDownFinished_Implementation();
+	//bool Server_ShrinkDownFinished_Validate();
+
+	//// 타임라인 동기화를 위한 멀티캐스트 함수 선언
+	//UFUNCTION(NetMulticast, Reliable)
+	//void Multi_ShrinkDownTimeline(AVacuumGun* VacuumGun);
+	//void Multi_ShrinkDownTimeline_Implementation(AVacuumGun* VacuumGun);
+
+	//UFUNCTION(NetMulticast, Reliable)
+	//void Multi_ShrinkDownUpdate(float Alpha);
+	//void Multi_ShrinkDownUpdate_Implementation(float Alpha);
+
+	//UFUNCTION(NetMulticast, Reliable)
+	//void Multi_ShrinkDownFinished();
+	//void Multi_ShrinkDownFinished_Implementation();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UStaticMeshComponent* Mesh;
@@ -86,17 +109,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Vacuum")
 		AVacuumGun* TargetVacuumGun;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Vacuum")
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Vacuum")
 		FVector ShrinkStartLocation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Vacuum")
-		FVector ShrinkStartScale;
+		FVector ShrinkStartScale;*/
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Vacuum")
+	/*UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Vacuum")
 		UCurveFloat* ShirnkDownCurve;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Vacuum")
-		UCurveFloat* ExpandToNormalCurve;
+		UCurveFloat* ExpandToNormalCurve;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CoreItem")
 		bool bisPhaseItem;
@@ -104,9 +127,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
 		bool bisAbsorbable;
 
-	FTimeline ShrinkDownTimeline;
+	// FTimeline ShrinkDownTimeline;
 
-	FTimeline ExpandToNormalTimeline;
+	// FTimeline ExpandToNormalTimeline;
 
 	FVector MeshOriginalSize;
 };

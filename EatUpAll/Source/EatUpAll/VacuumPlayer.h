@@ -37,6 +37,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		UHunterWidget* GetPlayerHUD() { return PlayerHUD; }
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+		void OnSuckAction(AActor* HitActor);
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Mesh)
 	USkeletalMeshComponent* Mesh1P;
 

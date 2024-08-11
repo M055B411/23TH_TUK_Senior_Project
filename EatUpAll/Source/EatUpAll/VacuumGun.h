@@ -7,6 +7,7 @@
 #include "VacuumInterface.h"
 #include "VacuumGun.generated.h"
 
+class AVacuumPlayer;
 class AVacuumable;
 class UAmmoCount;
 
@@ -32,6 +33,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FVector GetMuzzleLocation();
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Vacuum")
+	void OnAbsorbCompleted(AActor* HitActor);
 
 	UFUNCTION(BlueprintCallable)
 		float GetMaxCharge() { return MaxChargeTime; }
@@ -77,6 +80,7 @@ protected:
 
 	bool CanAbsorbThisActor(FHitResult HitResult);
 
+	UFUNCTION(BlueprintCallable)
 	void PlayAbsorbSound();
 
 	FVector GetTraceStartLocation();
@@ -177,6 +181,4 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "HUD", meta = (AllowPrivateAccess = "true"))
 		bool bIsOverloaded;
-
-
 };

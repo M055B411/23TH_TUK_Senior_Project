@@ -8,7 +8,6 @@
 void AHunter_Controller::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-	
 }
 
 void AHunter_Controller::BeginPlay()

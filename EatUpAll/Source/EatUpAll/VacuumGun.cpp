@@ -2,8 +2,9 @@
 
 
 #include "VacuumGun.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Vacuumable.h"
+#include "VacuumPlayer.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Camera/CameraComponent.h"
 // #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
@@ -55,7 +56,7 @@ void AVacuumGun::EnableVacuuming(bool ShouldVacuum)
 
 	if (IsVacuuming != ShouldVacuum)
 	{
-			IsVacuuming = ShouldVacuum;
+		IsVacuuming = ShouldVacuum;
 	}
 }
 
@@ -103,7 +104,9 @@ void AVacuumGun::TraceForVacuum()
 
 void AVacuumGun::PullAndAbsorb(float DeltaTime)
 {
-	float ForceMultiplier = 1000.f; // 힘의 크기를 조절하는 스칼라 값
+	// UE_LOG(LogTemp, Warning, TEXT("PullAndAbsorb Has Been Called"));
+
+	float ForceMultiplier = 3.f; // 힘의 크기를 조절하는 스칼라 값
 
 	for (FHitResult HitResult : VacuumHitResultArray)
 	{
@@ -115,12 +118,26 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 			if (CanPlayerSeeThisObject(HitResult)&&Cast<AVacuumable>(HitResult.GetActor())->GetAbsorbable())
 			{
 				FVector ForceToAdd = GetForceToAdd(HitResult, DeltaTime) * ForceMultiplier;
-				HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
-				// HitResult.GetComponent()->SetEnableGravity(false);
 
-				if (CanAbsorbThisActor(HitResult))
+				// ForceToAdd 출력
+				// UE_LOG(LogTemp, Warning, TEXT("Force To Add: %s"), *ForceToAdd.ToString());
+
+				//HitResult.GetComponent()->AddForce((FVector)(GetForceToAdd(HitResult, DeltaTime)), FName(""), true);
+
+				UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+				if (HitComponent)
 				{
-					Absorb(HitResult.GetActor());
+					// Force 적용
+					HitComponent->AddForce(ForceToAdd, NAME_None, true);
+
+					// 현재 속도 출력
+					FVector CurrentVelocity = HitComponent->GetPhysicsLinearVelocity();
+					// UE_LOG(LogTemp, Warning, TEXT("Hit Actor: %s, Current Velocity: %s"), *HitResult.GetActor()->GetName(), *CurrentVelocity.ToString());
+
+					if (CanAbsorbThisActor(HitResult))
+					{
+						Absorb(HitResult.GetActor());
+					}
 				}
 			}
 		}
@@ -129,12 +146,11 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 
 void AVacuumGun::DamageTarget(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
+	// UE_LOG(LogTemp, Warning, TEXT("DamageTarget Has Been Called"));
 
-	for (FHitResult HitResult : DamageHitResultArray)
+	for (FHitResult& HitResult : DamageHitResultArray)
 	{
 		UGameplayStatics::ApplyDamage(HitResult.GetActor(), 1.2f, nullptr, nullptr, nullptr);
-		UE_LOG(LogTemp, Warning, TEXT("DamageTarget."));
 	}
 }
 
@@ -169,23 +185,41 @@ void AVacuumGun::TraceForDamage()
 
 void AVacuumGun::Absorb(AActor* HitActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Absorb Has Been Called"));
-
 	if (!CanFire() && IsVacuuming && OwnerInterface)
 	{
-		IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
-		if (HitVacuumable && Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
+		UE_LOG(LogTemp, Warning, TEXT("Absorb11111111111111111111111111"));
+
+		//IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
+		//if (HitVacuumable && Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
+		//{
+		//	UE_LOG(LogTemp, Warning, TEXT("2222222222222222222222222"));
+		//	LastFrameHitActors.Remove(HitActor);
+		//	CurrentFrameHitActors.Remove(HitActor);
+		//	Execute_ShrinkDown(HitActor, this);
+		//}
+
+		if (Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Absorb2222222222222222222222222"));
 			LastFrameHitActors.Remove(HitActor);
 			CurrentFrameHitActors.Remove(HitActor);
-			Execute_ShrinkDown(HitActor, this);
+
+			if (AVacuumPlayer* VacuumPlayer = Cast<AVacuumPlayer>(GetOwner()))
+            {
+                // 블루프린트 노드에서 함수 호출
+                VacuumPlayer->OnSuckAction(HitActor);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Error, TEXT("Failed to cast to AVacuumPlayer"));
+            }
 		}
 	}
 }
 
 bool AVacuumGun::CanAbsorbThisActor(FHitResult HitResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("CanAbsorbThisActor Has Been Called"));
+	// UE_LOG(LogTemp, Warning, TEXT("CanAbsorbThisActor Has Been Called"));
 
 	// 1. 흡수 범위 내에 있는지 확인
 	if ((GetOwner()->GetActorLocation() - HitResult.ImpactPoint).Length() < AbsorbRange)
@@ -230,31 +264,6 @@ void AVacuumGun::CancelVacuumEffect()
 		}
 	}
 }
-
-//void AVacuumGun::FireAmmo()
-//{
-//	if (CanFire() && GetWorld())
-//	{
-//		
-//		
-//		if (ProjectileClass != nullptr) {
-//			FVector LuanchDirection = (GetTraceEndLocation() - GetTraceStartLocation()).GetSafeNormal();
-//
-//			
-//			FActorSpawnParameters ActorSpawnParams;
-//			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-//			const FRotator SpawnRotation = GetOwner()->GetActorRotation();
-//
-//			AVacuumProjectile* SpawnedProjectile = GetWorld()->SpawnActor<AVacuumProjectile>(ProjectileClass, GetTraceStartLocation(), SpawnRotation, ActorSpawnParams);
-//
-//			PlayFireSound();
-//
-//			IsVacuuming = false;
-//			Ammo = 0.f;
-//		}
-//		
-//	}
-//}
 
 FVector AVacuumGun::GetTraceStartLocation()
 {
