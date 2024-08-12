@@ -187,12 +187,9 @@ void AVacuumGun::Absorb(AActor* HitActor)
 {
 	if (!CanFire() && IsVacuuming && OwnerInterface)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Absorb11111111111111111111111111"));
-
 		//IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
 		//if (HitVacuumable && Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
 		//{
-		//	UE_LOG(LogTemp, Warning, TEXT("2222222222222222222222222"));
 		//	LastFrameHitActors.Remove(HitActor);
 		//	CurrentFrameHitActors.Remove(HitActor);
 		//	Execute_ShrinkDown(HitActor, this);
@@ -200,7 +197,6 @@ void AVacuumGun::Absorb(AActor* HitActor)
 
 		if (Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Absorb2222222222222222222222222"));
 			LastFrameHitActors.Remove(HitActor);
 			CurrentFrameHitActors.Remove(HitActor);
 

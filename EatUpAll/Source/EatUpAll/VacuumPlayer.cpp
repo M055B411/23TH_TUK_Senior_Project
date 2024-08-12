@@ -42,22 +42,16 @@ AVacuumPlayer::AVacuumPlayer()
 	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
-	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	PlayerHUDClass = nullptr;
 	PlayerHUD = nullptr;
-
-	// OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
-	// OverheadWidget->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
 void AVacuumPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 
 	/*if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -183,16 +177,6 @@ void AVacuumPlayer::StopVacuum()
 	}
 	
 }
-
-//void AVacuumPlayer::FireVacuumGun()
-//{
-//	PlayFireMontage();
-//	if (VacuumGun != nullptr)
-//	{
-//		VacuumGun->FireAmmo();
-//	}
-//	
-//}
 
 void AVacuumPlayer::PlayFireMontage()
 {
