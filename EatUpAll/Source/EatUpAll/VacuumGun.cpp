@@ -106,7 +106,7 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("PullAndAbsorb Has Been Called"));
 
-	float ForceMultiplier = 3.f; // 힘의 크기를 조절하는 스칼라 값
+	float ForceMultiplier = 2.f; // 힘의 크기를 조절하는 스칼라 값
 
 	for (FHitResult HitResult : VacuumHitResultArray)
 	{
@@ -185,7 +185,7 @@ void AVacuumGun::TraceForDamage()
 
 void AVacuumGun::Absorb(AActor* HitActor)
 {
-	if (!CanFire() && IsVacuuming && OwnerInterface)
+	if (IsVacuuming && OwnerInterface)	// (!CanFire() && IsVacuuming && OwnerInterface)
 	{
 		//IVacuumInterface* HitVacuumable = Cast<IVacuumInterface>(HitActor);
 		//if (HitVacuumable && Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
@@ -195,7 +195,7 @@ void AVacuumGun::Absorb(AActor* HitActor)
 		//	Execute_ShrinkDown(HitActor, this);
 		//}
 
-		if (Cast<AVacuumable>(HitActor)->GetWeight() < 1.f)
+		if (Cast<AVacuumable>(HitActor)->GetWeight() < 0.8f)
 		{
 			LastFrameHitActors.Remove(HitActor);
 			CurrentFrameHitActors.Remove(HitActor);

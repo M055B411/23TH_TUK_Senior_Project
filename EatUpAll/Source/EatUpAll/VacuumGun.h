@@ -139,10 +139,10 @@ protected:
 	float VacuumForce = 200000.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
-	float AbsorbWindow = 45.f;
+	float AbsorbWindow = 60.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
-	float AbsorbRange = 300.f;;
+	float AbsorbRange = 1000.f;;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vacuum")
 	bool IsVacuuming;
