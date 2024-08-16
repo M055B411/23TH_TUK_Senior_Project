@@ -106,7 +106,7 @@ void AVacuumGun::PullAndAbsorb(float DeltaTime)
 {
 	// UE_LOG(LogTemp, Warning, TEXT("PullAndAbsorb Has Been Called"));
 
-	float ForceMultiplier = 2.f; // 힘의 크기를 조절하는 스칼라 값
+	float ForceMultiplier = 3.f; // 힘의 크기를 조절하는 스칼라 값
 
 	for (FHitResult HitResult : VacuumHitResultArray)
 	{
